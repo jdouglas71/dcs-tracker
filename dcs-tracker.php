@@ -53,9 +53,9 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 
 	$retval .= "Tracking Numbers: {$value} <br />";
 
-	return $retval;
+	//return $retval;
 
-	//header( "Location: " . site_url('/'.$redirect_page.'/') );
+	header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
 

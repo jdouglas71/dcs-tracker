@@ -14,10 +14,15 @@ License: GPL
  */
 function dcs_tracker_landing_page_shortcode($atts, $content=null)
 {
-	$retval = "";
+	extract( shortcode_atts( array(
+								'redirect_page' => 'Home',
+								'tracking_id' => 'Tracking ID',
+							), $atts ) );
 
 
-	return $retval;
+	//JGD TODO Track ID
+
+	header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
 

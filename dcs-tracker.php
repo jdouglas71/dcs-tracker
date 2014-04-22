@@ -34,7 +34,8 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 
 		if( !in_array($tracking_id, $ids) )
 		{
-			$value += ";".$tracking_id;
+			$value .= ";".$tracking_id;
+			$retval .= "Tracking IDs (update 1): {$value} <br />";
 			update_option( "dcs_tracker_tracking_ids", $value );
 		}
 	}
@@ -52,9 +53,9 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 
 	$retval .= "Tracking Numbers: {$value} <br />";
 
-	//return $retval;
+	return $retval;
 
-	header( "Location: " . site_url('/'.$redirect_page.'/') );
+	//header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
 

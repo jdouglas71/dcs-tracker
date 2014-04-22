@@ -58,7 +58,7 @@
 			  <?php
 			  }
 			  ?>
-		<p class="submit" style="text-align:center;">
+		<p class="submit" style="padding-left:100px;">
 			<input type="submit" name="Submit" value="<?php _e('Reset', 'dcs_tracker_trdom' ) ?>" />
 		</p>
 	</form>

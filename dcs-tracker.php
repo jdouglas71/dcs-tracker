@@ -24,7 +24,7 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 	$retval .= "Tracking IDs: {$value} <br />";
 	if( $value == FALSE )
 	{
-		$value = $tracking_id .";";
+		$value = $tracking_id;
 		update_option( "dcs_tracker_tracking_ids", $value );
 	}
 	else
@@ -34,7 +34,7 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 
 		if( !in_array($tracking_id, $ids) )
 		{
-			$value += $tracking_id.";";
+			$value += ";".$tracking_id;
 			update_option( "dcs_tracker_tracking_ids", $value );
 		}
 	}

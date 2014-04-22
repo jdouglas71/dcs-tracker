@@ -40,8 +40,8 @@
 		<?php 
 			  if( sizeof($tracking_ids) > 0 )
 			  { ?>
-				<table border="0" style="text-align:center;padding:5px;padding-right:15px;border-collapse:collapse;">
-					<tr><th><h3>Reset</h3></th><th><h3>Tracking ID</h3></th><th><h3># of Redirects</h3></th><tr>
+				<table border="0" style="text-align:center;padding:10px;padding-right:15px;border-collapse:collapse;">
+					<tr><th style="padding:10px;"><h3>Reset</h3></th><th style="padding:10px;"><h3>Tracking ID</h3></th><th style="padding:10px;"><h3># of Redirects</h3></th><tr>
 				<?php
 					 foreach($tracking_ids as $key => $value)
 					 { ?>

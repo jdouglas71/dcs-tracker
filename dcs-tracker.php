@@ -21,6 +21,13 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 
 
 	//JGD TODO Track ID
+	$value = get_option( "dcs_tracker_".$tracking_id );
+	if( $value == FALSE )
+	{
+		$value = 0;
+	}
+	$value += 1;
+	update_option( "dcs_tracker_".$tracking_id, $value );
 
 	header( "Location: " . site_url('/'.$redirect_page.'/') );
 }

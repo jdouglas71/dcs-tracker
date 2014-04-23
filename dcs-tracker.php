@@ -19,9 +19,10 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 								'tracking_id' => 'Tracking ID',
 							), $atts ) );
 
+	//$retval = "";
 	//Make sure we keep track of all the tracking ids
 	$value = get_option( "dcs_tracker_tracking_ids" );
-	$retval .= "Tracking IDs: {$value} <br />";
+	//$retval .= "Tracking IDs: {$value} <br />";
 	if( $value == FALSE )
 	{
 		$value = $tracking_id;
@@ -35,12 +36,12 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 		if( !in_array($tracking_id, $ids) )
 		{
 			$value .= ";".$tracking_id;
-			$retval .= "Tracking IDs (update 1): {$value} <br />";
+			//$retval .= "Tracking IDs (update 1): {$value} <br />";
 			update_option( "dcs_tracker_tracking_ids", $value );
 		}
 	}
 
-	$retval .= "Tracking IDs (updated): {$value} <br />";
+	//$retval .= "Tracking IDs (updated): {$value} <br />";
 
 	//Update the tracking value
 	$value = get_option( "dcs_tracker_".$tracking_id );
@@ -51,14 +52,13 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 	$value += 1;
 	update_option( "dcs_tracker_".$tracking_id, $value );
 
-	$retval .= "Tracking Numbers: {$value} <br />";
+	//$retval .= "Tracking Numbers: {$value} <br />";
 
 	//return $retval;
 
 	header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
-
 
 /**
  * Add our admin menu to the dashboard.
@@ -76,3 +76,35 @@ function dcs_tracker_admin_page()
 {
     include( 'dcs-tracker-admin.php' );
 }
+
+/**
+ * Google Analytics tracker.
+ */
+function dcs_tracker_google_tracking_code()
+{
+	//Don't track admin
+	//if( is_admin() ) return;
+
+	$google_analytics_flag = get_option( "dcs_tracker_google_analytics_flag" );
+	$google_analytics_id = get_option( "dcs_tracker_google_analytics_id" );
+
+	if( ($google_analytics_flag == "1") && ($google_analytics_id != "") )
+	{
+        echo "<script type='text/javascript'>
+
+            var _gaq = _gaq || [];
+            _gaq.push(
+                ['_setAccount', '" . esc_js( $google_analytics_id ) . "'],
+                ['_trackPageview']
+            );
+
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+        </script>";
+	}
+}
+add_action( 'wp_footer', 'dcs_tracker_google_tracking_code' );

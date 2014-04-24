@@ -16,6 +16,7 @@
 
 	if($_POST['dcs_tracker_hidden'] == 'Y') 
 	{
+		$today = new DateTime("now");
 		//Process table
 		foreach( $ids as $id )
 		{
@@ -23,6 +24,7 @@
 			{
 				update_option( "dcs_tracker_".$id, 0 );
 				$tracking_ids[$id] = 0;
+				update_option( "dcs_tracker_".$id."_lcd", $today->format('l, M d Y') );
 			}
 		}
 
@@ -54,11 +56,11 @@
 			  if( sizeof($tracking_ids) > 0 )
 			  { ?>
 				<table border="0" style="text-align:center;padding:10px;padding-right:15px;border-collapse:collapse;">
-					<tr><th style="padding:10px;"><h3>Reset</h3></th><th style="padding:10px;"><h3>Tracking ID</h3></th><th style="padding:10px;"><h3># of Redirects</h3></th><tr>
+					<tr><th style="padding:10px;"><h3>Reset</h3></th><th style="padding:10px;"><h3>Tracking ID</h3></th><th style="padding:10px;"><h3># of Redirects</h3></th><th style="padding:10px;"><h3>Date of Last Reset</h3></th><tr>
 				<?php
 					 foreach($tracking_ids as $key => $value)
 					 { ?>
-						<tr><td><input type="checkbox" name="<?php echo $key ?>"></td><td><?php echo $key; ?></td><td style=""><?php echo $value; ?></td></tr>
+						<tr><td><input type="checkbox" name="<?php echo $key ?>"></td><td><?php echo $key; ?></td><td style=""><?php echo $value; ?></td><td style=""><?php echo get_option("dcs_tracker_".$key."_lcd"); ?></td></tr>
 					   <?php
 					 }
 				?>

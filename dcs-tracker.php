@@ -20,24 +20,29 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 							), $atts ) );
 
 	//$retval = "";
+	$today = new DateTime('NOW');
 	//Make sure we keep track of all the tracking ids
 	$value = get_option( "dcs_tracker_tracking_ids" );
 	//$retval .= "Tracking IDs: {$value} <br />";
 	if( $value == FALSE )
 	{
+		//NO IDs YET!
 		$value = $tracking_id;
 		update_option( "dcs_tracker_tracking_ids", $value );
+		update_option( "dcs_tracker_".$value."_lcd", $today->format('l, M d Y') ); 
 	}
 	else
 	{
 		//Determine if the tracking id is already in the list.
 		$ids = explode(";",$value);
 
+		//Add it if it's not there.
 		if( !in_array($tracking_id, $ids) )
 		{
 			$value .= ";".$tracking_id;
 			//$retval .= "Tracking IDs (update 1): {$value} <br />";
 			update_option( "dcs_tracker_tracking_ids", $value );
+			update_option( "dcs_tracker_".$value."_lcd", $today->format('l, M d Y') ); 
 		}
 	}
 

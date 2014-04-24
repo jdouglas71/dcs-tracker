@@ -83,7 +83,7 @@ function dcs_tracker_admin_page()
 function dcs_tracker_google_tracking_code()
 {
 	//Don't track admin
-	//if( is_admin() ) return;
+	if( is_admin() ) return;
 
 	$google_analytics_flag = get_option( "dcs_tracker_google_analytics_flag" );
 	$google_analytics_id = get_option( "dcs_tracker_google_analytics_id" );
@@ -101,7 +101,7 @@ function dcs_tracker_google_tracking_code()
             (function() {
                 var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
                 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); 
             })();
 
         </script>";

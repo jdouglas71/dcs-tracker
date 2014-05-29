@@ -1,0 +1,34 @@
+
+table.dcs-tracker-ids
+{
+	text-align:center;
+	padding:10px;
+	padding-right:15px;
+	border-collapse:collapse;
+}
+
+table.dcs-tracker-ids th
+{
+	padding:10px;
+	font:bold 0.75em Verdana;
+}
+
+hr.dcs-tracker-admin
+{
+	width:95%;
+	text-align:left;
+	position:absolute;
+	left:10px;
+}
+
+p.dcs-tracker-h1
+{
+	font:bold 2.0em Verdana;
+	vertical-align:top;
+}
+
+p.dcs-tracker-h2
+{
+	font:bold 1.0em Verdana;
+	vertical-align:top;
+}

@@ -2,12 +2,25 @@
 /*
 Plugin Name: DCS Tracker
 Plugin URI: http://douglasconsulting.net/
-Description: An "invisible landing page" that can be used to track where users come from via custom urls. 
-Version: 1.0
+Description: An "invisible landing page" that can be used to track where users come from via custom urls. Adding the ability to 
+Version: 1.1
 Author: Jason Douglas
 Author URI: http://douglasconsulting.net
 License: GPL
 */
+
+/**
+ * Load custom scripts and styles for the admin page.
+ */
+function dcs_tracker_load_admin_scripts()
+{
+	wp_register_style( 'dcs_tracker_admin_style', plugin_dir_url(__FILE__).'admin-style.css' );
+	wp_enqueue_style( 'dcs_tracker_admin_style' );
+
+	wp_register_script( 'dcs_tracker_script', plugin_dir_url(__FILE__).'dcs-tracker.php' );
+	wp_enqueue_script( 'dcs_tracker_script' );
+}
+add_action( 'admin_enqueue_scripts', 'dcs_tracker_load_admin_scripts' );
 
 /**
  * Shortcode for our landing page. 

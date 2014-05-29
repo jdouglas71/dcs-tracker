@@ -47,16 +47,18 @@
 ?>
 
 <div class="wrap">
-	<?php echo "<p style='font:bold 2.0em Verdana;vertical-align:top;'>"."<img src='http://douglasconsulting.net/favicon.ico' width='32'>". __( 'DCS Tracker Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
-	<hr style="width:95%;text-align:left;position:absolute;left:10px;">
+	<?php echo "<p class='dcs-tracker-h1' style=''>"."<img src='http://douglasconsulting.net/favicon.ico' width='32'>". __( 'DCS Tracker Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
+	<hr class='dcs-tracker-admin'>
 	<br />
+	<?php echo "<p class='dcs-tracker-h2'>".__( 'Landing Pages', 'dcs_tracker_trdom' ) . "</p>"; ?>
+	<hr class="dcs-tracker-admin">
 	<form name="dcs_tracker_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
 		<input type="hidden" name="dcs_tracker_hidden" value="Y">
 		<?php 
 			  if( sizeof($tracking_ids) > 0 )
 			  { ?>
-				<table border="0" style="text-align:center;padding:10px;padding-right:15px;border-collapse:collapse;">
-					<tr><th style="padding:10px;"><h3>Reset</h3></th><th style="padding:10px;"><h3>Tracking ID</h3></th><th style="padding:10px;"><h3># of Redirects</h3></th><th style="padding:10px;"><h3>Date of Last Reset</h3></th><tr>
+				<table border="0" class="dcs-tracker-ids">
+					<tr><th><h3>Reset</h3></th><th><h3>Tracking ID</h3></th><th><h3># of Redirects</h3></th><th><h3>Date of Last Reset</h3></th><tr>
 				<?php
 					 foreach($tracking_ids as $key => $value)
 					 { ?>
@@ -74,13 +76,25 @@
 			  }
 			  ?>
 		<br />
-		<hr style="width:95%;text-align:left;position:absolute;left:10px;">
+		<hr class="dcs-tracker-admin" style="">
 		<br />
+
+		<?php echo "<p class='dcs-tracker-h2'>".__( 'Google Analytics Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
+		<hr class='dcs-tracker-admin'>
+		<br />
+
         <p><?php _e("Use Google Analytics: " ); ?><input style="padding-left:10px;" type="checkbox" name="google_analytics_flag" value="1" <?php if($google_analytics_flag == '1') echo 'checked'; ?>></p>
         <p><?php _e("Google Analytics UID: " ); ?><input style="padding-left:10px;" type="text" name="google_analytics_id" value="<?php echo $google_analytics_id; ?>" size="32"></p>
 
+		<hr class='dcs-tracker-admin'>
+		<br />
+
+		<?php echo "<p class='dcs-tracker-h2'>".__( 'Referral Codes', 'dcs_tracker_trdom' ) . "</p>"; ?>
+		<hr class='dcs-tracker-admin'>
+		<br />
+
 		<p class="submit" style="padding-left:100px;">
-			<input type="submit" name="Submit" value="<?php _e('Update', 'dcs_tracker_trdom' ) ?>" />
+			<input type="submit" name="Submit" style="border-radius: 5px;" value="<?php _e('Update', 'dcs_tracker_trdom' ) ?>" />
 		</p>
 	</form>
 </div>

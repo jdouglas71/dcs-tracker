@@ -1,21 +1,28 @@
 jQuery(document).ready( function() {
 
 	jQuery("div.dcs-tracker-message").hide();
+	jQuery("div.dcs-tracker-error-message").hide();
 
 	jQuery("#dcs-tracker-add-discount").click( function() {
+
+		jQuery("div.dcs-tracker-message").hide();
+		jQuery("div.dcs-tracker-error-message").hide();
 
 		var discountAmount = jQuery("input#dcs-tracker-discount").val();
 		var discountName = jQuery("input#dcs-tracker-discount-name").val().trim();
 
 		if( !jQuery.isNumeric(discountAmount) )
 		{
-			alert( "The discount amount must be a number." );
+			jQuery("p#dcs-tracker-error-message").text( "The discount amount must be a number." );
+			jQuery("div.dcs-tracker-error-message").show();
 			return;
 		}
 
 		if( !discountName )
 		{
-			alert( "The discount name cannot be blank." );
+			jQuery("p#dcs-tracker-error-message").text( "The discount name cannot be blank." );
+			jQuery("div.dcs-tracker-error-message").show();
+
 			return;
 		}
 
@@ -27,7 +34,7 @@ jQuery(document).ready( function() {
 		};
   
 		jQuery.post( dcs_tracker_script_vars.ajaxurl, data, function(response) {
-			alert( response );
+			//alert( response );
 			jQuery("p#dcs-tracker-message").text( response );
 			jQuery("div.dcs-tracker-message").show();
 			//location.reload( true );

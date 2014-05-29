@@ -5,6 +5,7 @@
 	$tracking_ids = array();
 	$ids = array();
 	$value = get_option("dcs_tracker_tracking_ids");
+	$discountValues = get_option("dcs_tracker_discounts", array());
 	if( $value != FALSE )
 	{
 		$ids = explode(";", $value);
@@ -49,10 +50,11 @@
 <div class="wrap">
 	<?php echo "<p class='dcs-tracker-h1' style=''>"."<img src='http://douglasconsulting.net/favicon.ico' width='32'>". __( 'DCS Tracker Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
 	<hr class='dcs-tracker-admin'><br />
-	<div class="updated dcs-tracker-message"><p id='dcs-tracker-message'></p></div> 
 
    	<?php echo "<p class='dcs-tracker-h2'>".__( 'Referral Codes', 'dcs_tracker_trdom' ) . "</p>"; ?>
    	<hr class='dcs-tracker-admin'><br />
+	<div class="updated dcs-tracker-message" style="display:none;"><p id='dcs-tracker-message'></p></div> 
+	<div class="error dcs-tracker-error-message" style="display:none;"><p id='dcs-tracker-error-message'></p></div> 
 	<label for='dcs-tracker-discount-name'>Name</label><input id='dcs-tracker-discount-name' type='text' class='dcs-tracker-admin'>
 	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='number' class='dcs-tracker-admin' min="0.00" value="0.00" step="0.01">
 	<button id='dcs-tracker-add-discount'>Generate Referral Code</button> 

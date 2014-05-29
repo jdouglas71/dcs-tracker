@@ -19,8 +19,30 @@ function dcs_tracker_load_admin_scripts()
 
 	wp_register_script( 'dcs_tracker_script', plugin_dir_url(__FILE__).'dcs-tracker.js', array('jquery') );
 	wp_enqueue_script( 'dcs_tracker_script' );
+
+    //Register nonce and variables for ajax calls in the page picker.
+    wp_localize_script( "dcs_tracker_script", "dcs_tracker_script_vars",
+                        array(
+                                "dcs_tracker_add_discount_nonce"=>wp_create_nonce("dcs_tracker_add_discount"),
+                                "ajaxurl" => admin_url('admin-ajax.php')
+                            )
+                      );
+
 }
 add_action( 'admin_enqueue_scripts', 'dcs_tracker_load_admin_scripts' );
+
+/**
+ * Add Discount
+ */
+function dcs_tracker_add_discount()
+{
+	check_ajax_referer( "dcs_tracker_add_discount", "dcs_tracker_add_discount_nonce" );
+
+	//Do stuff here
+	echo "Jason is cool";
+
+	die();
+}
 
 /**
  * Shortcode for our landing page. 

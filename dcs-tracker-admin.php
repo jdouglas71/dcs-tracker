@@ -48,8 +48,14 @@
 
 <div class="wrap">
 	<?php echo "<p class='dcs-tracker-h1' style=''>"."<img src='http://douglasconsulting.net/favicon.ico' width='32'>". __( 'DCS Tracker Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
-	<hr class='dcs-tracker-admin'>
-	<br />
+	<hr class='dcs-tracker-admin'><br />
+
+   	<?php echo "<p class='dcs-tracker-h2'>".__( 'Referral Codes', 'dcs_tracker_trdom' ) . "</p>"; ?>
+   	<hr class='dcs-tracker-admin'><br />
+	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='text' class='dcs-tracker-admin'>
+	<button id='dcs-tracker-add-discount'>Generate Referral Code</button> 
+
+   	<hr class='dcs-tracker-admin'><br />
 	<?php echo "<p class='dcs-tracker-h2'>".__( 'Landing Pages', 'dcs_tracker_trdom' ) . "</p>"; ?>
 	<hr class="dcs-tracker-admin">
 	<form name="dcs_tracker_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
@@ -76,25 +82,18 @@
 			  }
 			  ?>
 		<br />
-		<hr class="dcs-tracker-admin" style="">
-		<br />
+		<hr class="dcs-tracker-admin" style=""><br />
 
 		<?php echo "<p class='dcs-tracker-h2'>".__( 'Google Analytics Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
-		<hr class='dcs-tracker-admin'>
-		<br />
+		<hr class='dcs-tracker-admin'><br />
 
         <p><?php _e("Use Google Analytics: " ); ?><input style="padding-left:10px;" type="checkbox" name="google_analytics_flag" value="1" <?php if($google_analytics_flag == '1') echo 'checked'; ?>></p>
         <p><?php _e("Google Analytics UID: " ); ?><input style="padding-left:10px;" type="text" name="google_analytics_id" value="<?php echo $google_analytics_id; ?>" size="32"></p>
 
-		<hr class='dcs-tracker-admin'>
-		<br />
-
-		<?php echo "<p class='dcs-tracker-h2'>".__( 'Referral Codes', 'dcs_tracker_trdom' ) . "</p>"; ?>
-		<hr class='dcs-tracker-admin'>
-		<br />
+		<hr class='dcs-tracker-admin'><br />
 
 		<p class="submit" style="padding-left:100px;">
-			<input type="submit" name="Submit" style="border-radius: 5px;" value="<?php _e('Update', 'dcs_tracker_trdom' ) ?>" />
+			<input type="submit" name="Submit" style="border-radius: 5px;" value="<?php _e('Update Settings', 'dcs_tracker_trdom' ) ?>" />
 		</p>
 	</form>
 </div>

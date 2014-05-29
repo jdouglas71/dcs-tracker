@@ -17,7 +17,7 @@ function dcs_tracker_load_admin_scripts()
 	wp_register_style( 'dcs_tracker_admin_style', plugin_dir_url(__FILE__).'admin-style.css' );
 	wp_enqueue_style( 'dcs_tracker_admin_style' );
 
-	wp_register_script( 'dcs_tracker_script', plugin_dir_url(__FILE__).'dcs-tracker.php' );
+	wp_register_script( 'dcs_tracker_script', plugin_dir_url(__FILE__).'dcs-tracker.js', array('jquery') );
 	wp_enqueue_script( 'dcs_tracker_script' );
 }
 add_action( 'admin_enqueue_scripts', 'dcs_tracker_load_admin_scripts' );

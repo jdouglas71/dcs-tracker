@@ -32,3 +32,24 @@ p.dcs-tracker-h2
 	font:bold 1.0em Verdana;
 	vertical-align:top;
 }
+
+label#dcs-tracker-discount
+{
+   	vertical-align: middle;
+}
+
+label#dcs-tracker-discount:after
+{
+   	content: " ($)";
+}
+
+#dcs-tracker-discount
+{
+   	border-radius: 5px;
+	margin: 5px;
+}
+
+#dcs-tracker-add-discount
+{
+	border-radius: 5px;
+}	

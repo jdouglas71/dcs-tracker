@@ -52,7 +52,8 @@
 
    	<?php echo "<p class='dcs-tracker-h2'>".__( 'Referral Codes', 'dcs_tracker_trdom' ) . "</p>"; ?>
    	<hr class='dcs-tracker-admin'><br />
-	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='number' class='dcs-tracker-admin' min="0.00" value="0.00">
+	<label for='dcs-tracker-discount-name'>Name</label><input id='dcs-tracker-discount-name' type='text' class='dcs-tracker-admin'>
+	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='number' class='dcs-tracker-admin' min="0.00" value="0.00" step="0.01">
 	<button id='dcs-tracker-add-discount'>Generate Referral Code</button> 
 
    	<hr class='dcs-tracker-admin'><br />

@@ -43,10 +43,15 @@ label#dcs-tracker-discount:after
    	content: " ($)";
 }
 
-#dcs-tracker-discount
+#dcs-tracker-discount, #dcs-tracker-discount-name
 {
    	border-radius: 5px;
 	margin: 5px;
+}
+
+input#dcs-tracker-discount
+{
+   	width: 75px;
 }
 
 #dcs-tracker-add-discount

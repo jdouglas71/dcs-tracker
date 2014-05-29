@@ -39,10 +39,14 @@ function dcs_tracker_add_discount()
 	check_ajax_referer( "dcs_tracker_add_discount", "dcs_tracker_add_discount_nonce" );
 
 	//Do stuff here
-	echo "Jason is cool";
+	$amount = $_POST['amount'];
+	$name = $_POST['name'];
+
+	echo "Amount: " . $amount . " Name: " . $name;
 
 	die();
 }
+add_action('wp_ajax_dcs_tracker_add_discount', 'dcs_tracker_add_discount' );
 
 /**
  * Shortcode for our landing page. 

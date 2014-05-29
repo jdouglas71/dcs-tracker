@@ -38,11 +38,25 @@ function dcs_tracker_add_discount()
 {
 	check_ajax_referer( "dcs_tracker_add_discount", "dcs_tracker_add_discount_nonce" );
 
-	//Do stuff here
-	$amount = $_POST['amount'];
-	$name = $_POST['name'];
+	$discountArray = get_option("dcs_tracker_discounts", array());
 
-	echo "Amount: " . $amount . " Name: " . $name;
+	//Do stuff here
+	$name = $_POST['name'];
+	$amount = $_POST['amount'];
+
+	if( in_array($name,$discountArray) )
+	{
+		$retval = "The discount amount for ".$name." has been updated.";
+	}
+	else 
+	{
+		$retval = "The discount has been added to the database.";
+	}
+	$discountArray[$name] = $amount;
+
+	update_option( "dcs_tracker_discounts", $discountArray );
+
+	echo $retval;
 
 	die();
 }

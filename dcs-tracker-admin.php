@@ -49,6 +49,7 @@
 <div class="wrap">
 	<?php echo "<p class='dcs-tracker-h1' style=''>"."<img src='http://douglasconsulting.net/favicon.ico' width='32'>". __( 'DCS Tracker Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
 	<hr class='dcs-tracker-admin'><br />
+	<div class="updated dcs-tracker-message"><p id='dcs-tracker-message'></p></div> 
 
    	<?php echo "<p class='dcs-tracker-h2'>".__( 'Referral Codes', 'dcs_tracker_trdom' ) . "</p>"; ?>
    	<hr class='dcs-tracker-admin'><br />

@@ -1,5 +1,7 @@
 jQuery(document).ready( function() {
 
+	jQuery("div.dcs-tracker-message").hide();
+
 	jQuery("#dcs-tracker-add-discount").click( function() {
 
 		var discountAmount = jQuery("input#dcs-tracker-discount").val();
@@ -26,7 +28,9 @@ jQuery(document).ready( function() {
   
 		jQuery.post( dcs_tracker_script_vars.ajaxurl, data, function(response) {
 			alert( response );
-			location.reload( true );
+			jQuery("p#dcs-tracker-message").text( response );
+			jQuery("div.dcs-tracker-message").show();
+			//location.reload( true );
 		});
 	});
 

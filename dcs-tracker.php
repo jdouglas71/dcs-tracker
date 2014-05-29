@@ -56,6 +56,10 @@ function dcs_tracker_add_discount()
 
 	update_option( "dcs_tracker_discounts", $discountArray );
 
+	$referralURL = site_url(get_option("dcs_tracker_referral_page","/product/ripcord/"))."?referralCode=" . md5($name);
+
+	$retval .= "The referral URL: " . $referralURL;
+
 	echo $retval;
 
 	die();

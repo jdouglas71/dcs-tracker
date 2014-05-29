@@ -6,6 +6,8 @@
 	$ids = array();
 	$value = get_option("dcs_tracker_tracking_ids");
 	$discountValues = get_option("dcs_tracker_discounts", array());
+	$referralPage = get_option("dcs_tracker_referral_page", "/product/ripcord/");
+
 	if( $value != FALSE )
 	{
 		$ids = explode(";", $value);
@@ -32,9 +34,11 @@
 		//Process google options.
 		$google_analytics_flag = $_POST["google_analytics_flag"];
 		$google_analytics_id = $_POST["google_analytics_id"];
+		$referralPage = $_POST["referral_page"];
 
 		update_option( "dcs_tracker_google_analytics_flag", $google_analytics_flag );
 		update_option( "dcs_tracker_google_analytics_id",   $google_analytics_id );
+		update_option( "dcs_tracker_referral_page", $referralPage );
 
 		?>
 		<div class="updated"><p><strong><?php _e('Options Updated.' ); ?></strong></p></div>
@@ -44,6 +48,7 @@
 	{
 		$google_analytics_id = get_option( "dcs_tracker_google_analytics_id" );
 		$google_analytics_flag = get_option( "dcs_tracker_google_analytics_flag" );
+		$referralPage = get_option("dcs_tracker_referral_page", "/product/ripcord/");
 	}
 ?>
 
@@ -59,11 +64,15 @@
 	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='number' class='dcs-tracker-admin' min="0.00" value="0.00" step="0.01">
 	<button id='dcs-tracker-add-discount'>Generate Referral Code</button> 
 
-   	<hr class='dcs-tracker-admin'><br />
-	<?php echo "<p class='dcs-tracker-h2'>".__( 'Landing Pages', 'dcs_tracker_trdom' ) . "</p>"; ?>
-	<hr class="dcs-tracker-admin">
 	<form name="dcs_tracker_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
 		<input type="hidden" name="dcs_tracker_hidden" value="Y">
+        <p><?php _e("Referral Page: " ); ?><input style="padding-left:10px;" type="text" name="referral_page" value="<?php echo $referralPage; ?>" size="32"></p>
+
+
+		<hr class='dcs-tracker-admin'><br />
+
+		<?php echo "<p class='dcs-tracker-h2'>".__( 'Landing Pages', 'dcs_tracker_trdom' ) . "</p>"; ?>
+		<hr class="dcs-tracker-admin">
 		<?php 
 			  if( sizeof($tracking_ids) > 0 )
 			  { ?>

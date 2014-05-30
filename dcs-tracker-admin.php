@@ -63,28 +63,57 @@
 	<label for='dcs-tracker-discount-name'>Name</label><input id='dcs-tracker-discount-name' type='text' class='dcs-tracker-admin'>
 	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='number' class='dcs-tracker-admin' min="0.00" value="0.00" step="0.01">
 	<button id='dcs-tracker-add-discount'>Generate Referral Code</button> 
+	<?php 
+		  if( sizeof($discountValues) > 0 )
+		  { ?>
+			<table border="0" class="dcs-tracker-ids">
+				<thead>
+					<tr><th>Name</th><th>Discount Amount</th><th>Referral URL</th><tr>
+				</thead>
+				<tbody>
+				<?php
+					 foreach($discountValues as $name => $amount)
+					 { ?>
+						<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($amount, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".md5($name);?>"><?php echo site_url($referralPage)."?referralCode=".md5($name);?></a></td></tr>  
+					   <?php
+					 }
+				?>
+				</tbody>
+			</table>
+			<?php 
+		  } 
+		  else
+		  { ?>
+			 <p>There are no referral codes defined in the database.</p>
+		  <?php
+		  }
+		  ?>
 
 	<form name="dcs_tracker_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
 		<input type="hidden" name="dcs_tracker_hidden" value="Y">
-        <p><?php _e("Referral Page: " ); ?><input style="padding-left:10px;" type="text" name="referral_page" value="<?php echo $referralPage; ?>" size="32"></p>
+        <p><?php _e("Referral Page: " ); ?><input style="padding-left:10px;" type="text" class="dcs-tracker-admin" name="referral_page" value="<?php echo $referralPage; ?>" size="32"></p>
 
 
 		<hr class='dcs-tracker-admin'><br />
 
 		<?php echo "<p class='dcs-tracker-h2'>".__( 'Landing Pages', 'dcs_tracker_trdom' ) . "</p>"; ?>
-		<hr class="dcs-tracker-admin">
+		<hr class="dcs-tracker-admin"><br />
 		<?php 
 			  if( sizeof($tracking_ids) > 0 )
 			  { ?>
 				<table border="0" class="dcs-tracker-ids">
-					<tr><th><h3>Reset</h3></th><th><h3>Tracking ID</h3></th><th><h3># of Redirects</h3></th><th><h3>Date of Last Reset</h3></th><tr>
-				<?php
-					 foreach($tracking_ids as $key => $value)
-					 { ?>
-						<tr><td><input type="checkbox" name="<?php echo $key ?>"></td><td><?php echo $key; ?></td><td style=""><?php echo $value; ?></td><td style=""><?php echo get_option("dcs_tracker_".$key."_lcd"); ?></td></tr>
-					   <?php
-					 }
-				?>
+					<thead>
+						<tr><th>Reset</th><th>Tracking ID</th><th># of Redirects</th><th>Date of Last Reset</th><tr>
+					</thead>
+					<tbody>
+					<?php
+						 foreach($tracking_ids as $key => $value)
+						 { ?>
+							<tr><td><input type="checkbox" name="<?php echo $key ?>"></td><td><?php echo $key; ?></td><td style=""><?php echo $value; ?></td><td style=""><?php echo get_option("dcs_tracker_".$key."_lcd"); ?></td></tr>
+						   <?php
+						 }
+					?>
+					</tbody>
 				</table>
 			    <?php 
 			  } 
@@ -101,7 +130,7 @@
 		<hr class='dcs-tracker-admin'><br />
 
         <p><?php _e("Use Google Analytics: " ); ?><input style="padding-left:10px;" type="checkbox" name="google_analytics_flag" value="1" <?php if($google_analytics_flag == '1') echo 'checked'; ?>></p>
-        <p><?php _e("Google Analytics UID: " ); ?><input style="padding-left:10px;" type="text" name="google_analytics_id" value="<?php echo $google_analytics_id; ?>" size="32"></p>
+        <p><?php _e("Google Analytics UID: " ); ?><input style="padding-left:10px;" class="dcs-tracker-admin" type="text" name="google_analytics_id" value="<?php echo $google_analytics_id; ?>" size="32"></p>
 
 		<hr class='dcs-tracker-admin'><br />
 

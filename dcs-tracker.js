@@ -1,6 +1,6 @@
 jQuery(document).ready( function() {
 
-	jQuery("div.dcs-tracker-message").hide();
+    jQuery("div.dcs-tracker-message").hide();
 	jQuery("div.dcs-tracker-error-message").hide();
 
 	jQuery("#dcs-tracker-add-discount").click( function() {
@@ -41,5 +41,10 @@ jQuery(document).ready( function() {
 		});
 	});
 
+	jQuery("body").ajaxStart( function() {
+		jQuery(this).css({'cursor':'wait'});
+	}).ajaxStop(function() {
+		jQuery(this).css({'cursor':'default'});
+	});
 });
 

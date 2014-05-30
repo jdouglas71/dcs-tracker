@@ -44,7 +44,7 @@ function dcs_tracker_add_discount()
 	$name = $_POST['name'];
 	$amount = $_POST['amount'];
 
-	if( in_array($name,$discountArray) )
+	if( array_key_exists($name,$discountArray) )
 	{
 		$retval = "The discount amount for ".$name." has been updated.";
 	}
@@ -58,7 +58,7 @@ function dcs_tracker_add_discount()
 
 	$referralURL = site_url(get_option("dcs_tracker_referral_page","/product/ripcord/"))."?referralCode=" . md5($name);
 
-	$retval .= "The referral URL: " . $referralURL;
+	$retval .= PHP_EOL."The referral URL: " . $referralURL;
 
 	echo $retval;
 

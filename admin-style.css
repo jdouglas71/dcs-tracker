@@ -5,12 +5,21 @@ table.dcs-tracker-ids
 	padding:10px;
 	padding-right:15px;
 	border-collapse:collapse;
+	background-color: #aaa;
+	margin-top: 10px;
 }
 
 table.dcs-tracker-ids th
 {
 	padding:10px;
-	font:bold 0.75em Verdana;
+	font:bold 0.9em Verdana;
+}
+
+table.dcs-tracker-ids tbody
+{
+   	height: 100px;
+	overflow: auto;
+	background-color: #ddd;
 }
 
 hr.dcs-tracker-admin
@@ -43,10 +52,11 @@ label#dcs-tracker-discount:after
    	content: " ($)";
 }
 
-#dcs-tracker-discount, #dcs-tracker-discount-name
+#dcs-tracker-discount, #dcs-tracker-discount-name, input.dcs-tracker-admin
 {
    	border-radius: 5px;
 	margin: 5px;
+	border-color: #aaa;
 }
 
 input#dcs-tracker-discount
@@ -58,3 +68,4 @@ input#dcs-tracker-discount
 {
 	border-radius: 5px;
 }	
+

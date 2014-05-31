@@ -74,7 +74,7 @@
 				<?php
 					 foreach($discountValues as $name => $amount)
 					 { ?>
-						<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($amount, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".md5($name);?>"><?php echo site_url($referralPage)."?referralCode=".md5($name);?></a></td></tr>  
+						<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($amount, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
 					   <?php
 					 }
 				?>

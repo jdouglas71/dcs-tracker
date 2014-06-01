@@ -10,6 +10,12 @@ jQuery(document).ready( function() {
 
 		var discountAmount = jQuery("input#dcs-tracker-discount").val();
 		var discountName = jQuery("input#dcs-tracker-discount-name").val().trim();
+		var discountType = "flat";
+
+		if( jQuery("#dcs-tracker-discount-type").is(":checked") )
+		{
+			discountType = "percentage";
+		}
 
 		if( !jQuery.isNumeric(discountAmount) )
 		{
@@ -30,6 +36,7 @@ jQuery(document).ready( function() {
 			action: 'dcs_tracker_add_discount',
 			amount: discountAmount, 
 			name: discountName,
+			type: discountType,
 			dcs_tracker_add_discount_nonce: dcs_tracker_script_vars.dcs_tracker_add_discount_nonce
 		};
   
@@ -45,6 +52,18 @@ jQuery(document).ready( function() {
 		jQuery(this).css({'cursor':'wait'});
 	}).ajaxStop(function() {
 		jQuery(this).css({'cursor':'default'});
+	});
+
+	jQuery("#dcs-tracker-discount-type").click( function() {
+		jQuery("label#dcs-tracker-discount").toggleClass("percentage"); 
+		if( jQuery("#dcs-tracker-discount-type").is(":checked") )
+		{
+			//jQuery("#dcs-tracker-discount").step(1);
+		}
+		else
+		{
+			//jQuery("#dcs-tracker-discount").step(0.01);
+		}
 	});
 });
 

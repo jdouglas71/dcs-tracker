@@ -61,7 +61,8 @@
 	<div class="updated dcs-tracker-message" style="display:none;"><p id='dcs-tracker-message'></p></div> 
 	<div class="error dcs-tracker-error-message" style="display:none;"><p id='dcs-tracker-error-message'></p></div> 
 	<label for='dcs-tracker-discount-name'>Name</label><input id='dcs-tracker-discount-name' type='text' class='dcs-tracker-admin'>
-	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='number' class='dcs-tracker-admin' min="0.00" value="0.00" step="0.01">
+	<label id='dcs-tracker-discount' for='dcs-tracker-discount'>Discount Amount</label><input id='dcs-tracker-discount' type='number' class='dcs-tracker-admin' min="0" value="0.00" step="1">
+	<input type="checkbox" id="dcs-tracker-discount-type" value="percentage">Percentage
 	<button id='dcs-tracker-add-discount'>Generate Referral Code</button> 
 	<?php 
 		  if( sizeof($discountValues) > 0 )
@@ -72,10 +73,29 @@
 				</thead>
 				<tbody>
 				<?php
-					 foreach($discountValues as $name => $amount)
-					 { ?>
-						<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($amount, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
-					   <?php
+					 foreach($discountValues as $name => $values)
+					 { 
+						if( !is_array($values) ) 
+						{
+						?>
+							<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+					    <?php
+						}
+						else
+						{
+							if( $values['type'] == "flat" )
+							{
+							?>
+								<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values['amount'], 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+							<?php
+							}
+							else
+							{
+							?>
+								<tr><td><?php echo $name; ?></td><td><?php echo number_format($values['amount']*100, 0).'%'; ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+							<?php
+							}
+						}
 					 }
 				?>
 				</tbody>

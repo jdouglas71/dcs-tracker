@@ -43,6 +43,12 @@ function dcs_tracker_add_discount()
 	//Do stuff here
 	$name = $_POST['name'];
 	$amount = $_POST['amount'];
+	$type = $_POST['type'];
+
+	if( $type == "percentage" )
+	{
+		$amount /= 100;
+	}
 
 	if( array_key_exists($name,$discountArray) )
 	{
@@ -52,7 +58,7 @@ function dcs_tracker_add_discount()
 	{
 		$retval = "The discount has been added to the database.";
 	}
-	$discountArray[$name] = $amount;
+	$discountArray[$name] = array( "amount" => $amount, "type" => $type );
 
 	update_option( "dcs_tracker_discounts", $discountArray );
 

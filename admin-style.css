@@ -52,6 +52,11 @@ label#dcs-tracker-discount:after
    	content: " ($)";
 }
 
+label#dcs-tracker-discount.percentage:after
+{
+   	content: " (%)";
+}
+
 #dcs-tracker-discount, #dcs-tracker-discount-name, input.dcs-tracker-admin
 {
    	border-radius: 5px;

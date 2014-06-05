@@ -65,5 +65,16 @@ jQuery(document).ready( function() {
 			//jQuery("#dcs-tracker-discount").step(0.01);
 		}
 	});
+
+	jQuery("#dcs-tracker-delete-discounts").click( function() {
+		var data = {
+			action: 'dcs_tracker_delete_discounts',
+			dcs_tracker_delete_discounts_nonce: dcs_tracker_script_vars.dcs_tracker_delete_discounts_nonce
+		};
+
+		jQuery.post( dcs_tracker_script_vars.ajaxurl, data, function(response) {
+			alert( response );
+		});
+	});
 });
 

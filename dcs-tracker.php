@@ -23,6 +23,7 @@ function dcs_tracker_load_admin_scripts()
     //Register nonce and variables for ajax calls in the page picker.
     wp_localize_script( "dcs_tracker_script", "dcs_tracker_script_vars",
                         array(
+								"dcs_tracker_delete_discounts_nonce"=>wp_create_nonce("dcs_tracker_delete_discounts"),
                                 "dcs_tracker_add_discount_nonce"=>wp_create_nonce("dcs_tracker_add_discount"),
                                 "ajaxurl" => admin_url('admin-ajax.php')
                             )
@@ -71,6 +72,20 @@ function dcs_tracker_add_discount()
 	die();
 }
 add_action('wp_ajax_dcs_tracker_add_discount', 'dcs_tracker_add_discount' );
+
+/**
+ * Delete Discounts
+ */
+function dcs_tracker_delete_discounts()
+{
+	check_ajax_referer( "dcs_tracker_delete_discounts", "dcs_tracker_delete_discounts_nonce" );
+
+	echo "Delete!";
+
+	die();
+}
+add_action('wp_ajax_dcs_tracker_delete_discounts', 'dcs_tracker_delete_discounts' );
+
 
 /**
  * Shortcode for our landing page. 

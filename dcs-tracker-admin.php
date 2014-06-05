@@ -69,7 +69,7 @@
 		  { ?>
 			<table border="0" class="dcs-tracker-ids">
 				<thead>
-					<tr><th>Name</th><th>Discount Amount</th><th>Referral URL</th><tr>
+					<tr><th>Delete</th><th>Name</th><th>Discount Amount</th><th>Referral URL</th><tr>
 				</thead>
 				<tbody>
 				<?php
@@ -78,7 +78,7 @@
 						if( !is_array($values) ) 
 						{
 						?>
-							<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+							<tr><td><input type="checkbox" id="checker_<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
 					    <?php
 						}
 						else
@@ -86,13 +86,13 @@
 							if( $values['type'] == "flat" )
 							{
 							?>
-								<tr><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values['amount'], 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+								<tr><td><input type="checkbox" id="checker_<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values['amount'], 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
 							<?php
 							}
 							else
 							{
 							?>
-								<tr><td><?php echo $name; ?></td><td><?php echo number_format($values['amount']*100, 0).'%'; ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+								<tr><td><input type="checkbox" id="checker_<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo number_format($values['amount']*100, 0).'%'; ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
 							<?php
 							}
 						}
@@ -100,6 +100,7 @@
 				?>
 				</tbody>
 			</table>
+			<div style="position:absolute;right:177px;width:300px;"><button id='dcs-tracker-delete-discounts'>Delete Selected Discounts</button></div> 
 			<?php 
 		  } 
 		  else

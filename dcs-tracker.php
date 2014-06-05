@@ -67,8 +67,6 @@ function dcs_tracker_add_discount()
 
 	$retval .= PHP_EOL."The referral URL: " . $referralURL;
 
-	echo $retval;
-
 	die();
 }
 add_action('wp_ajax_dcs_tracker_add_discount', 'dcs_tracker_add_discount' );
@@ -80,7 +78,16 @@ function dcs_tracker_delete_discounts()
 {
 	check_ajax_referer( "dcs_tracker_delete_discounts", "dcs_tracker_delete_discounts_nonce" );
 
-	echo "Delete!";
+	$names = $_POST['names'];
+
+	$discountArray = get_option("dcs_tracker_discounts", array());
+
+	foreach( $names as $name )
+	{
+		unset( $discountArray[$name] );
+	}
+
+	update_option( "dcs_tracker_discounts", $discountArray );
 
 	die();
 }

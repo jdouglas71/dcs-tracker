@@ -78,7 +78,7 @@
 						if( !is_array($values) ) 
 						{
 						?>
-							<tr><td><input type="checkbox" id="checker_<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+							<tr><td><input type="checkbox" class="dcs-tracker-delete-checker" value="<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values, 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
 					    <?php
 						}
 						else
@@ -86,13 +86,13 @@
 							if( $values['type'] == "flat" )
 							{
 							?>
-								<tr><td><input type="checkbox" id="checker_<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values['amount'], 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+								<tr><td><input type="checkbox" class="dcs-tracker-delete-checker" value="<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo '$'.number_format($values['amount'], 2); ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
 							<?php
 							}
 							else
 							{
 							?>
-								<tr><td><input type="checkbox" id="checker_<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo number_format($values['amount']*100, 0).'%'; ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
+								<tr><td><input type="checkbox" class="dcs-tracker-delete-checker" value="<?php echo $name;?>"></td><td><?php echo $name; ?></td><td><?php echo number_format($values['amount']*100, 0).'%'; ?></td><td style=""><a href="<?php echo site_url($referralPage)."?referralCode=".urlencode($name);?>"><?php echo site_url($referralPage)."?referralCode=".urlencode($name);?></a></td></tr>  
 							<?php
 							}
 						}

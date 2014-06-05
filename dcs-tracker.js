@@ -67,14 +67,24 @@ jQuery(document).ready( function() {
 	});
 
 	jQuery("#dcs-tracker-delete-discounts").click( function() {
-		var data = {
-			action: 'dcs_tracker_delete_discounts',
-			dcs_tracker_delete_discounts_nonce: dcs_tracker_script_vars.dcs_tracker_delete_discounts_nonce
-		};
 
-		jQuery.post( dcs_tracker_script_vars.ajaxurl, data, function(response) {
-			alert( response );
+		var names = [];
+		jQuery(".dcs-tracker-delete-checker:checked").each(function() {
+			names.push(this.value);
 		});
+
+		if( names.length > 0 )
+		{
+			var data = {
+				action: 'dcs_tracker_delete_discounts',
+				names: names,
+				dcs_tracker_delete_discounts_nonce: dcs_tracker_script_vars.dcs_tracker_delete_discounts_nonce
+			};
+	
+			jQuery.post( dcs_tracker_script_vars.ajaxurl, data, function(response) {
+				location.reload( true );
+			});
+		}
 	});
 });
 

@@ -67,6 +67,8 @@ function dcs_tracker_add_discount()
 
 	$retval .= PHP_EOL."The referral URL: " . $referralURL;
 
+	echo $retval;
+
 	die();
 }
 add_action('wp_ajax_dcs_tracker_add_discount', 'dcs_tracker_add_discount' );

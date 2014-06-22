@@ -148,6 +148,13 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 
 	//return $retval;
 
+	//Add the tracking id to the session
+	if( !session_id() )
+	{
+		session_start();
+	}
+	$_SESSION["dcs_referral_code"] = $tracking_id;
+
 	header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );

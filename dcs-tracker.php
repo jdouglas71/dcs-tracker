@@ -41,8 +41,8 @@ function dcs_tracker_add_discount()
 
 	$discountArray = get_option("dcs_tracker_discounts", array());
 
-	//set the name to lower case.
-	$name = strtolower($_POST['name']);
+	//Do stuff here
+	$name = $_POST['name'];
 	$amount = $_POST['amount'];
 	$type = $_POST['type'];
 
@@ -106,12 +106,11 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 								'tracking_id' => 'Tracking ID',
 							), $atts ) );
 
-	//Lower case the id.
-	$tracking_id = strtolower($tracking_id);
+	//$retval = "";
 	$today = new DateTime('NOW');
 	//Make sure we keep track of all the tracking ids
 	$value = get_option( "dcs_tracker_tracking_ids" );
-
+	//$retval .= "Tracking IDs: {$value} <br />";
 	if( $value == FALSE )
 	{
 		//NO IDs YET!
@@ -157,9 +156,25 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 	$_SESSION["dcs_referral_code"] = $tracking_id;
 	error_log( "Added tracking id to session: " . $_SESSION['dcs_referral_code'], 3, get_template_directory()."/session.log" );
 
-	header( "Location: " . site_url('/'.$redirect_page.'/') );
+	wp_redirect( site_url('/'.$redirect_page.'/') );
+	//header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
+
+function dcs_pre_process_shortcode() {
+  if (!is_singular()) return;
+  global $post;
+  if (!empty($post->post_content)) {
+    $regex = get_shortcode_regex();
+    preg_match_all('/'.$regex.'/',$post->post_content,$matches);
+    if (!empty($matches[2]) && in_array('dcs_tracker_landing_page',$matches[2]) && is_user_logged_in()) {
+      // redirect to third party site
+    } else {
+      // login form or redirect to login page
+    }
+  }
+}
+add_action('template_redirect','dcs_pre_process_shortcode',1);
 
 /**
  * Add our admin menu to the dashboard.

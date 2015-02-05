@@ -154,25 +154,31 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 		session_start();
 	}
 	$_SESSION["dcs_referral_code"] = $tracking_id;
-	error_log( "Added tracking id to session: " . $_SESSION['dcs_referral_code'], 3, get_template_directory()."/session.log" );
+	error_log( "Added tracking id to session: " . $_SESSION['dcs_referral_code'], 3, plugin_dir_path(__FILE__)."/session.log" );
 
 	wp_redirect( site_url('/'.$redirect_page.'/') );
-	//header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
 
-function dcs_pre_process_shortcode() {
-  if (!is_singular()) return;
-  global $post;
-  if (!empty($post->post_content)) {
-    $regex = get_shortcode_regex();
-    preg_match_all('/'.$regex.'/',$post->post_content,$matches);
-    if (!empty($matches[2]) && in_array('dcs_tracker_landing_page',$matches[2]) && is_user_logged_in()) {
-      // redirect to third party site
-    } else {
-      // login form or redirect to login page
-    }
-  }
+/** 
+ * Preprocess the content and find our shortcode so we can redirect.
+ */
+function dcs_pre_process_shortcode() 
+{
+	if (!is_singular()) return;
+	global $post;
+	if (!empty($post->post_content)) 
+	{
+		$regex = get_shortcode_regex();
+		preg_match_all('/'.$regex.'/',$post->post_content,$matches);
+		if (!empty($matches[2]) && in_array('dcs_tracker_landing_page',$matches[2]) && is_user_logged_in()) 
+		{
+			preg_match_all("/([^,= ]+)=([^,= ]+)/", $matches[3][0], $r); 
+			$result = array_combine($r[1], str_replace("\"", "",$r[2]));
+			dcs_tracker_landing_page_shortcode( $result );
+			//wp_redirect( site_url('/'.$result['redirect_page'].'/') );
+		} 
+	}
 }
 add_action('template_redirect','dcs_pre_process_shortcode',1);
 

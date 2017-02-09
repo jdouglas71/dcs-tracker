@@ -2,7 +2,7 @@
 /*
 Plugin Name: DCS Tracker
 Plugin URI: http://douglasconsulting.net/
-Description: An "invisible landing page" that can be used to track where users come from via custom urls. 
+Description: Creates a tracking code that can be also be used as coupons. 
 Version: 1.0
 Author: Jason Douglas
 Author URI: http://douglasconsulting.net

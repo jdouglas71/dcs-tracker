@@ -1,86 +1,174 @@
-<?php 
+<?php
+/**
+* Admin Page for the DCS Tracker Plugin.
+*/
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
-	$google_analytics_id;
-	$google_analytics_flag;
-	$tracking_ids = array();
-	$ids = array();
-	$value = get_option("dcs_tracker_tracking_ids");
-	if( $value != FALSE )
+/**
+* Scripts and style sheets for the admin page.	
+*/
+function dcs_tracker_load_admin_scripts()
+{
+	wp_register_style( 'dcs-tracker-style', plugins_url('dcs-tracker.css', __FILE__), array() );
+	wp_register_style( 'jquery-alerts-style', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.alerts.css'), array(), "2.11" );
+	wp_register_style( 'jquery-qtip-style', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.qtip.css'), array(), "2.0" );
+
+	wp_enqueue_style( 'dcs-tracker-style' );
+	wp_enqueue_style( 'jquery-alerts-style' );
+	wp_enqueue_style( 'jquery-qtip-style' );
+		
+	wp_enqueue_script('jquery-qtip', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.qtip.js'), array('jquery'), false, true);
+	wp_enqueue_script('jquery-alerts', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.alerts.js'), array('jquery'), "1.11", true);
+	wp_enqueue_script('dcs-tracker-admin-script', (WP_PLUGIN_URL.'/dcs-tracker/dcs-tracker-admin.js'), 
+				  array('jquery', 'jquery-alerts'), "0.5", true);
+				  
+    //Register nonce values we can use to verify our ajax calls from the editor.
+    wp_localize_script( "dcs-tracker-admin-script", "dcs_tracker_admin_script_vars",
+                        array(
+								"ajaxurl" => admin_url('admin-ajax.php'),
+                            )
+                      );
+}
+add_action('admin_enqueue_scripts', 'dcs_tracker_load_admin_scripts');
+
+/**
+ * Add our admin menu to the dashboard.
+ */
+function dcs_tracker_admin_menu()
+{
+    add_options_page( 'DCS Tracker', 'DCS Tracker', 'administrator', 'dcs_tracker', 'dcs_tracker_admin_page');
+}
+add_action( 'admin_menu', 'dcs_tracker_admin_menu' );
+
+/**
+* Agents page.
+*/
+function dcs_tracker_admin_page()
+{
+	$status = NULL;
+	
+	if( isset($_SESSION['dcs-tracker-status']) ) $status = $_SESSION['dcs-tracker-status'];
+	
+	//error_log( "Status: ".print_r($_SESSION,true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
+	
+	$retval = "";
+	$active_tab = "reference-codes";
+	if( isset($_GET['tab']) ) 
 	{
-		$ids = explode(";", $value);
-		foreach( $ids as $id )
-		{
-			$tracking_ids[$id] = get_option( "dcs_tracker_".$id );
-		}
+    	$active_tab = $_GET['tab'];
 	}
-
-	if($_POST['dcs_tracker_hidden'] == 'Y') 
+	
+	$retval .= "<div class='wrap'>";
+	
+	$retval .= '<h2 class="nav-tab-wrapper">';
+    $retval .= '<a href="?page=dcs-tracker-menu&tab=reference-codes" class="nav-tab">Reference Codes</a>';
+	$retval .= '</h2>';
+	
+	if( $active_tab == "reference-codes" )
 	{
-		$today = new DateTime("now");
-		//Process table
-		foreach( $ids as $id )
+		$ref_codes = get_option("dcs_tracker_discounts", array());
+
+		$retval .= "<h1>Reference Codes</h1>";
+		$retval .= "<hr class='dcs-tracker-line'>";
+		
+		if( $status == NULL )
 		{
-			if( isset($_POST[$id]) )
-			{
-				update_option( "dcs_tracker_".$id, 0 );
-				$tracking_ids[$id] = 0;
-				update_option( "dcs_tracker_".$id."_lcd", $today->format('l, M d Y') );
+			$retval .= "<div class='updated dcs-tracker-message' style='display:none;'><p id='dcs-tracker-message'></p></div>"; 
+		}
+		else
+		{
+			$retval .= "<div class='updated dcs-tracker-message'><p id='dcs-tracker-message'>".$status."</p></div>"; 
+		}
+		$retval .= "<div class='error dcs-tracker-error-message' style='display:none;'><p id='dcs-tracker-error-message'></p></div>";  
+		
+		$retval .= "<div class='dcs-tracker-code'>";
+		$retval .= "<table>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-name'>Reference Code</label></td><td><input name='dcs-tracker-code-name' id='dcs-tracker-code-name'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Discount Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Percentage</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-type' id='dcs-tracker-code-type'></td></tr>";
+		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-code' value='Create Code'></td></tr>";
+		$retval .= "</table>";
+		$retval .= "</div>";
+		
+		if( $ref_codes == NULL )
+		{
+			$retval .= "<h2>No Reference Codes Defined.</h2>";		
+		}
+		else
+		{
+			$retval .= "<table class='dcs-tracker-ref-codes'>";
+			$retval .= "<tr><th>Reference Code</th><th>Discount</th></tr>";
+			foreach($ref_codes as $name => $values)
+			{ 
+				if( !is_array($values) ) 
+				{
+					$retval .= "<tr><td>".$name."</td><td>$".number_format($values, 2)."</td></tr>";
+				}
+				else
+				{
+					if( $values['type'] == "flat" )
+					{
+						$retval .= "<tr><td>".$name."</td><td>$".number_format($values['amount'], 2)."</td></tr>";
+					}
+					else
+					{
+						$retval .= "<tr><td>".$name."</td><td>".number_format($values['amount']*100, 0).'%'."</td></tr>";
+					}
+				}
 			}
 		}
+		
+		$retval .= "</table>";
+	}	
+	
+	$retval .= "</div>";
+		
+	echo $retval;
+}
 
-		//Process google options.
-		$google_analytics_flag = $_POST["google_analytics_flag"];
-		$google_analytics_id = $_POST["google_analytics_id"];
+/**
+* Create Code.
+*/
+function dcs_tracker_create_code()
+{
+	$discountArray = get_option("dcs_tracker_discounts", array());
 
-		update_option( "dcs_tracker_google_analytics_flag", $google_analytics_flag );
-		update_option( "dcs_tracker_google_analytics_id",   $google_analytics_id );
+	//Do stuff here
+	$name = strtolower($_POST['name']);
+	$amount = $_POST['amount'];
+	$type = $_POST['type'];
+	$status = "";
 
-		?>
-		<div class="updated"><p><strong><?php _e('Options Updated.' ); ?></strong></p></div>
-		<?php
-	} 
+	if( $type == "percentage" )
+	{
+		$amount /= 100;
+	}
+
+	if( array_key_exists($name,$discountArray) )
+	{
+		$status = "The discount amount for ".$name." has been updated.";
+	}
 	else 
 	{
-		$google_analytics_id = get_option( "dcs_tracker_google_analytics_id" );
-		$google_analytics_flag = get_option( "dcs_tracker_google_analytics_flag" );
+		$status = "The discount has been added to the database.";
 	}
-?>
+	$discountArray[$name] = array( "amount" => $amount, "type" => $type );
+	
+	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 
-<div class="wrap">
-	<?php echo "<p style='font:bold 2.0em Verdana;vertical-align:top;'>"."<img src='http://douglasconsulting.net/favicon.ico' width='32'>". __( 'DCS Tracker Options', 'dcs_tracker_trdom' ) . "</p>"; ?>
-	<hr style="width:95%;text-align:left;position:absolute;left:10px;">
-	<br />
-	<form name="dcs_tracker_form" method="post" action="<?php echo str_replace( '%7E', '~', $_SERVER['REQUEST_URI']); ?>">
-		<input type="hidden" name="dcs_tracker_hidden" value="Y">
-		<?php 
-			  if( sizeof($tracking_ids) > 0 )
-			  { ?>
-				<table border="0" style="text-align:center;padding:10px;padding-right:15px;border-collapse:collapse;">
-					<tr><th style="padding:10px;"><h3>Reset</h3></th><th style="padding:10px;"><h3>Tracking ID</h3></th><th style="padding:10px;"><h3># of Redirects</h3></th><th style="padding:10px;"><h3>Date of Last Reset</h3></th><tr>
-				<?php
-					 foreach($tracking_ids as $key => $value)
-					 { ?>
-						<tr><td><input type="checkbox" name="<?php echo $key ?>"></td><td><?php echo $key; ?></td><td style=""><?php echo $value; ?></td><td style=""><?php echo get_option("dcs_tracker_".$key."_lcd"); ?></td></tr>
-					   <?php
-					 }
-				?>
-				</table>
-			    <?php 
-			  } 
-			  else
-			  { ?>
-				 <p>There are no tracking ids defined in the database.</p>
-			  <?php
-			  }
-			  ?>
-		<br />
-		<hr style="width:95%;text-align:left;position:absolute;left:10px;">
-		<br />
-        <p><?php _e("Use Google Analytics: " ); ?><input style="padding-left:10px;" type="checkbox" name="google_analytics_flag" value="1" <?php if($google_analytics_flag == '1') echo 'checked'; ?>></p>
-        <p><?php _e("Google Analytics UID: " ); ?><input style="padding-left:10px;" type="text" name="google_analytics_id" value="<?php echo $google_analytics_id; ?>" size="32"></p>
+	update_option( "dcs_tracker_discounts", $discountArray );
+	
+	if( session_id() == '' ) session_start();
+	$_SESSION['dcs-tracker-status'] = $status;
+	session_write_close();
 
-		<p class="submit" style="padding-left:100px;">
-			<input type="submit" name="Submit" value="<?php _e('Update', 'dcs_tracker_trdom' ) ?>" />
-		</p>
-	</form>
-</div>
+	echo wp_get_referer();
+	
+	die();
+}
+add_action( 'wp_ajax_dcs_tracker_create_code', 'dcs_tracker_create_code' );
+add_action( 'wp_ajax_nopriv_dcs_tracker_create_code', 'dcs_tracker_create_code' );
+
+

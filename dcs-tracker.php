@@ -3,11 +3,13 @@
 Plugin Name: DCS Tracker
 Plugin URI: http://douglasconsulting.net/
 Description: Creates a tracking code that can be also be used as coupons. 
-Version: 1.0
+Version: 2.0
 Author: Jason Douglas
 Author URI: http://douglasconsulting.net
 License: GPL
 */
+
+require_once(dirname(__FILE__)."/dcs-tracker-admin.php");
 
 /**
  * Shortcode for our landing page. 
@@ -19,68 +21,9 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 								'tracking_id' => 'Tracking ID',
 							), $atts ) );
 
-	//$retval = "";
-	$today = new DateTime('NOW');
-	//Make sure we keep track of all the tracking ids
-	$value = get_option( "dcs_tracker_tracking_ids" );
-	//$retval .= "Tracking IDs: {$value} <br />";
-	if( $value == FALSE )
-	{
-		//NO IDs YET!
-		$value = $tracking_id;
-		update_option( "dcs_tracker_tracking_ids", $value );
-		update_option( "dcs_tracker_".$value."_lcd", $today->format('l, M d Y') ); 
-	}
-	else
-	{
-		//Determine if the tracking id is already in the list.
-		$ids = explode(";",$value);
-
-		//Add it if it's not there.
-		if( !in_array($tracking_id, $ids) )
-		{
-			$value .= ";".$tracking_id;
-			//$retval .= "Tracking IDs (update 1): {$value} <br />";
-			update_option( "dcs_tracker_tracking_ids", $value );
-			update_option( "dcs_tracker_".$value."_lcd", $today->format('l, M d Y') ); 
-		}
-	}
-
-	//$retval .= "Tracking IDs (updated): {$value} <br />";
-
-	//Update the tracking value
-	$value = get_option( "dcs_tracker_".$tracking_id );
-	if( $value == FALSE )
-	{
-		$value = 0;
-	}
-	$value += 1;
-	update_option( "dcs_tracker_".$tracking_id, $value );
-
-	//$retval .= "Tracking Numbers: {$value} <br />";
-
-	//return $retval;
-
 	header( "Location: " . site_url('/'.$redirect_page.'/') );
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
-
-/**
- * Add our admin menu to the dashboard.
- */
-function dcs_tracker_admin_menu()
-{
-    add_options_page( 'DCS Tracker', 'DCS Tracker', 'administrator', 'dcs_tracker', 'dcs_tracker_admin_page');
-}
-add_action( 'admin_menu', 'dcs_tracker_admin_menu' );
-
-/**
- * Show the admin page.
- */ 
-function dcs_tracker_admin_page()
-{
-    include( 'dcs-tracker-admin.php' );
-}
 
 /**
  * Google Analytics tracker.

@@ -1,0 +1,14 @@
+/**
+* DCS Tracker CSS file
+*/
+
+#dcs-tracker-create-code {
+	padding: 10px;
+	background: #607d8b;
+	border-radius: 5px;
+	color: white;
+}
+
+div.dcs-tracker-code table {
+	border-spacing: 10px;
+}

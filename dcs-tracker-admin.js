@@ -5,6 +5,7 @@ jQuery(document).ready(function() {
 		var name = jQuery('#dcs-tracker-code-name').val();
 		var value = jQuery('#dcs-tracker-code-value').val();
 		var type = "flat";
+		var redirect = jQuery('#dcs-tracker-code-redirect').val();
 		if( jQuery('#dcs-tracker-code-type').is(":checked") )
 			type = "percentage"; 
 			
@@ -21,6 +22,7 @@ jQuery(document).ready(function() {
 			name : name,
 			amount : value,
 			type : type,
+			redirect : redirect,
 			action: 'dcs_tracker_create_code',
 			//ripcord_contact_page_submit_nonce: ripcord_contact_page_script_vars.ripcord_contact_page_submit_nonce
 		};

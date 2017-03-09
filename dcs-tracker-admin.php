@@ -88,10 +88,12 @@ function dcs_tracker_admin_page()
 		$retval .= "<tr><td><label for='dcs-tracker-code-name'>Reference Code</label></td><td><input name='dcs-tracker-code-name' id='dcs-tracker-code-name'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Discount Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Percentage</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-type' id='dcs-tracker-code-type'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-redirect'>Redirect Page</label></td><td><input name='dcs-tracker-code-redirect' id='dcs-tracker-code-redirect'></td></tr>";		
 		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-code' value='Create Code'></td></tr>";
 		$retval .= "</table>";
 		$retval .= "</div>";
 		
+		$retval .= "<div class='dcs-tracker-ref-codes'>";
 		if( $ref_codes == NULL )
 		{
 			$retval .= "<h2>No Reference Codes Defined.</h2>";		
@@ -99,28 +101,35 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Reference Code</th><th>Discount</th></tr>";
+			$retval .= "<tr><th>Reference Code</th><th>Discount</th><th>Redirect Page</th></tr>";
 			foreach($ref_codes as $name => $values)
 			{ 
-				if( !is_array($values) ) 
-				{
-					$retval .= "<tr><td>".$name."</td><td>$".number_format($values, 2)."</td></tr>";
-				}
-				else
+				$retval .= "<tr>";
+				$retval .= "<td>".$name."</td>";
+				if( is_numeric($values['amount']) )
 				{
 					if( $values['type'] == "flat" )
 					{
-						$retval .= "<tr><td>".$name."</td><td>$".number_format($values['amount'], 2)."</td></tr>";
+						$retval .= "<td>$".number_format($values['amount'], 2)."</td>";
 					}
 					else
 					{
-						$retval .= "<tr><td>".$name."</td><td>".number_format($values['amount']*100, 0).'%'."</td></tr>";
+						$retval .= "<td>".number_format($values['amount']*100, 0).'%'."</td>";
 					}
 				}
+				else
+				{
+					$retval .= "<td></td>";
+				}
+				$redirect = "";
+				if( isset($values['redirect']) ) $redirect = $values['redirect'];
+				$retval .= "<td>".$redirect."</td>";
+				$retval .= "</tr>";
 			}
 		}
 		
 		$retval .= "</table>";
+		$retval .= "</div>";
 	}	
 	
 	$retval .= "</div>";
@@ -139,6 +148,7 @@ function dcs_tracker_create_code()
 	$name = strtolower($_POST['name']);
 	$amount = $_POST['amount'];
 	$type = $_POST['type'];
+	$redirect = $_POST['redirect'];
 	$status = "";
 
 	if( $type == "percentage" )
@@ -154,9 +164,9 @@ function dcs_tracker_create_code()
 	{
 		$status = "The discount has been added to the database.";
 	}
-	$discountArray[$name] = array( "amount" => $amount, "type" => $type );
+	$discountArray[$name] = array( "amount" => $amount, "type" => $type, "redirect" => $redirect );
 	
-	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
+	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 
 	update_option( "dcs_tracker_discounts", $discountArray );
 	

@@ -22,7 +22,7 @@ function dcs_tracker_load_admin_scripts()
 	wp_enqueue_script('jquery-qtip', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.qtip.js'), array('jquery'), false, true);
 	wp_enqueue_script('jquery-alerts', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.alerts.js'), array('jquery'), "1.11", true);
 	wp_enqueue_script('dcs-tracker-admin-script', (WP_PLUGIN_URL.'/dcs-tracker/dcs-tracker-admin.js'), 
-				  array('jquery', 'jquery-alerts'), "0.5", true);
+				  array('jquery', 'jquery-alerts'), "0.6", true);
 				  
     //Register nonce values we can use to verify our ajax calls from the editor.
     wp_localize_script( "dcs-tracker-admin-script", "dcs_tracker_admin_script_vars",

@@ -101,7 +101,7 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Reference Code</th><th>Discount</th><th>Redirect Page</th></tr>";
+			$retval .= "<tr><th>Reference Code</th><th>Discount</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
 			foreach($ref_codes as $name => $values)
 			{ 
 				$retval .= "<tr>";
@@ -124,6 +124,8 @@ function dcs_tracker_admin_page()
 				$redirect = "";
 				if( isset($values['redirect']) ) $redirect = $values['redirect'];
 				$retval .= "<td>".$redirect."</td>";
+				
+				$retval .= "<td><a href='".site_url("/".$name)."'>".site_url("/".$name)."</a></td>";
 				$retval .= "</tr>";
 			}
 		}
@@ -169,6 +171,18 @@ function dcs_tracker_create_code()
 	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 
 	update_option( "dcs_tracker_discounts", $discountArray );
+	
+	//Create Page 
+	$my_post = array(
+	  'post_title'    => wp_strip_all_tags( $name ),
+	  'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'"]',
+	  'post_status'   => 'publish',
+	  'post_author'   => get_current_user_id(),
+	  'post_type'     => 'page',
+	);
+ 
+	// Insert the post into the database
+	wp_insert_post( $my_post );
 	
 	if( session_id() == '' ) session_start();
 	$_SESSION['dcs-tracker-status'] = $status;

@@ -18,12 +18,44 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 {
 	extract( shortcode_atts( array(
 								'redirect_page' => 'Home',
-								'tracking_id' => 'Tracking ID',
+								'tracking_id' => '',
 							), $atts ) );
-
-	header( "Location: " . site_url('/'.$redirect_page.'/') );
+							
+	//Add the tracking id to the session
+	if( $tracking_id !== '' )
+	{
+		if( !session_id() )
+		{
+			session_start();
+		}
+		$_SESSION["dcs_referral_code"] = $tracking_id;
+	}
+	wp_redirect( site_url('/'.$redirect_page.'/') );
+	exit();
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );
+
+/** 
+ * Preprocess the content and find our shortcode so we can redirect.
+ */
+function dcs_pre_process_shortcode() 
+{
+	if (!is_singular()) return;
+	global $post;
+	if (!empty($post->post_content)) 
+	{
+		$regex = get_shortcode_regex();
+		preg_match_all('/'.$regex.'/',$post->post_content,$matches);
+		if (!empty($matches[2]) && in_array('dcs_tracker_landing_page',$matches[2]) && is_user_logged_in()) 
+		{
+			preg_match_all("/([^,= ]+)=([^,= ]+)/", $matches[3][0], $r); 
+			$result = array_combine($r[1], str_replace("\"", "",$r[2]));
+			dcs_tracker_landing_page_shortcode( $result );
+			//wp_redirect( site_url('/'.$result['redirect_page'].'/') );
+		} 
+	}
+}
+add_action('template_redirect','dcs_pre_process_shortcode', 100);
 
 /**
  * Google Analytics tracker.

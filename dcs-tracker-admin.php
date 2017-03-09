@@ -88,7 +88,8 @@ function dcs_tracker_admin_page()
 		$retval .= "<tr><td><label for='dcs-tracker-code-name'>Reference Code</label></td><td><input name='dcs-tracker-code-name' id='dcs-tracker-code-name'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Discount Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Percentage</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-type' id='dcs-tracker-code-type'></td></tr>";
-		$retval .= "<tr><td><label for='dcs-tracker-code-redirect'>Redirect Page</label></td><td><input name='dcs-tracker-code-redirect' id='dcs-tracker-code-redirect'></td></tr>";		
+		$retval .= "<tr><td><label for='dcs-tracker-code-create-page'>Create Page</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-create-page' id='dcs-tracker-code-create-page'></td></tr>";
+		$retval .= "<tr id='dcs-tracker-code-redirect-page' style='display:none;'><td><label for='dcs-tracker-code-redirect'>Redirect Page</label></td><td><input name='dcs-tracker-code-redirect' id='dcs-tracker-code-redirect'></td></tr>";		
 		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-code' value='Create Code'></td></tr>";
 		$retval .= "</table>";
 		$retval .= "</div>";
@@ -101,7 +102,7 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Reference Code</th><th>Discount</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
+			$retval .= "<tr><th>Reference Code</th><th>Discount</th><th>Has Page?</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
 			foreach($ref_codes as $name => $values)
 			{ 
 				$retval .= "<tr>";
@@ -121,11 +122,18 @@ function dcs_tracker_admin_page()
 				{
 					$retval .= "<td></td>";
 				}
+				$has_page = "false";
+				if( isset($values['has_page']) ) $has_page = $values['has_page'];
+				$retval .= "<td>".$has_page."</td>";
+				
 				$redirect = "";
 				if( isset($values['redirect']) ) $redirect = $values['redirect'];
 				$retval .= "<td>".$redirect."</td>";
 				
-				$retval .= "<td><a href='".site_url("/".$name)."'>".site_url("/".$name)."</a></td>";
+				if( $has_page == "true" )
+					$retval .= "<td><a href='".site_url("/".$name)."'>".site_url("/".$name)."</a></td>";
+				else
+					$retval .= "<td></td>";
 				$retval .= "</tr>";
 			}
 		}
@@ -151,6 +159,7 @@ function dcs_tracker_create_code()
 	$amount = $_POST['amount'];
 	$type = $_POST['type'];
 	$redirect = $_POST['redirect'];
+	$has_page = $_POST['has_page'];
 	$status = "";
 
 	if( $type == "percentage" )
@@ -166,23 +175,29 @@ function dcs_tracker_create_code()
 	{
 		$status = "The discount has been added to the database.";
 	}
-	$discountArray[$name] = array( "amount" => $amount, "type" => $type, "redirect" => $redirect );
+	$discountArray[$name] = array( "amount" => $amount, 
+								   "type" => $type, 
+								   "redirect" => $redirect, 
+								   "has_page" => $has_page, );
 	
 	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 
 	update_option( "dcs_tracker_discounts", $discountArray );
 	
-	//Create Page 
-	$my_post = array(
-	  'post_title'    => wp_strip_all_tags( $name ),
-	  'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'"]',
-	  'post_status'   => 'publish',
-	  'post_author'   => get_current_user_id(),
-	  'post_type'     => 'page',
-	);
+	if( $has_page == "true" )
+	{
+		//Create Page 
+		$my_post = array(
+		  'post_title'    => wp_strip_all_tags( $name ),
+		  'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'"]',
+		  'post_status'   => 'publish',
+		  'post_author'   => get_current_user_id(),
+		  'post_type'     => 'page',
+		);
  
-	// Insert the post into the database
-	wp_insert_post( $my_post );
+		// Insert the post into the database
+		wp_insert_post( $my_post );
+	}
 	
 	if( session_id() == '' ) session_start();
 	$_SESSION['dcs-tracker-status'] = $status;

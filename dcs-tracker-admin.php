@@ -48,15 +48,6 @@ add_action( 'admin_menu', 'dcs_tracker_admin_menu' );
 function dcs_tracker_admin_page()
 {
 	$status = NULL;
-	if( isset($_GET['created']) )
-	{
-		$status = "The Reference Code has been created.";
-	}
-	
-	if( isset($_GET['updated']) )
-	{
-		$status = "The Reference Code has been updated.";
-	}
 
 	error_log( "GET: ".print_r($_GET,true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 	
@@ -70,11 +61,21 @@ function dcs_tracker_admin_page()
 	$retval .= "<div class='wrap'>";
 	
 	$retval .= '<h2 class="nav-tab-wrapper">';
-    $retval .= '<a href="?page=dcs-tracker-menu&tab=reference-codes" class="nav-tab">Reference Codes</a>';
+    $retval .= '<a href="?page=dcs-tracker&tab=reference-codes" class="nav-tab">Reference Codes</a>';
 	$retval .= '</h2>';
 	
 	if( $active_tab == "reference-codes" )
 	{
+		if( isset($_GET['created']) )
+		{
+			$status = "The Reference Code has been created.";
+		}
+	
+		if( isset($_GET['updated']) )
+		{
+			$status = "The Reference Code has been updated.";
+		}
+
 		$ref_codes = get_option("dcs_tracker_discounts", array());
 
 		$retval .= "<h1>Reference Codes</h1>";

@@ -48,10 +48,17 @@ add_action( 'admin_menu', 'dcs_tracker_admin_menu' );
 function dcs_tracker_admin_page()
 {
 	$status = NULL;
+	if( isset($_GET['created']) )
+	{
+		$status = "The Reference Code has been created.";
+	}
 	
-	if( isset($_SESSION['dcs-tracker-status']) ) $status = $_SESSION['dcs-tracker-status'];
-	
-	//error_log( "Status: ".print_r($_SESSION,true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
+	if( isset($_GET['updated']) )
+	{
+		$status = "The Reference Code has been updated.";
+	}
+
+	error_log( "GET: ".print_r($_GET,true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 	
 	$retval = "";
 	$active_tab = "reference-codes";
@@ -75,7 +82,7 @@ function dcs_tracker_admin_page()
 		
 		if( $status == NULL )
 		{
-			$retval .= "<div class='updated dcs-tracker-message' style='display:none;'><p id='dcs-tracker-message'></p></div>"; 
+			$retval .= "<div class='updated dcs-tracker-message' style='display:none;'><p id='dcs-tracker-message'>STATUS</p></div>"; 
 		}
 		else
 		{
@@ -169,11 +176,11 @@ function dcs_tracker_create_code()
 
 	if( array_key_exists($name,$discountArray) )
 	{
-		$status = "The discount amount for ".$name." has been updated.";
+		$status = "&updated=1";
 	}
 	else 
 	{
-		$status = "The discount has been added to the database.";
+		$status = "&created=1";
 	}
 	$discountArray[$name] = array( "amount" => $amount, 
 								   "type" => $type, 
@@ -186,7 +193,9 @@ function dcs_tracker_create_code()
 	
 	if( $has_page == "true" )
 	{
-		//Create Page 
+		//Does page with this title already exist?
+		$page = get_page_by_title( $name );
+		
 		$my_post = array(
 		  'post_title'    => wp_strip_all_tags( $name ),
 		  'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'"]',
@@ -194,16 +203,20 @@ function dcs_tracker_create_code()
 		  'post_author'   => get_current_user_id(),
 		  'post_type'     => 'page',
 		);
- 
-		// Insert the post into the database
-		wp_insert_post( $my_post );
+		
+		if( $page == NULL )
+ 		{
+			// Insert the post into the database
+			wp_insert_post( $my_post );
+		}
+		else
+		{
+			$my_post['ID'] = $page->ID;
+			wp_update_post( $my_post );
+		}
 	}
 	
-	if( session_id() == '' ) session_start();
-	$_SESSION['dcs-tracker-status'] = $status;
-	session_write_close();
-
-	echo wp_get_referer();
+	echo wp_get_referer()."&status=1";
 	
 	die();
 }

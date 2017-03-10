@@ -17,7 +17,7 @@ require_once(dirname(__FILE__)."/dcs-tracker-admin.php");
 function dcs_tracker_landing_page_shortcode($atts, $content=null)
 {
 	extract( shortcode_atts( array(
-								'redirect_page' => 'Home',
+								'redirect_page' => '',
 								'tracking_id' => '',
 							), $atts ) );
 							
@@ -51,7 +51,6 @@ function dcs_pre_process_shortcode()
 			preg_match_all("/([^,= ]+)=([^,= ]+)/", $matches[3][0], $r); 
 			$result = array_combine($r[1], str_replace("\"", "",$r[2]));
 			dcs_tracker_landing_page_shortcode( $result );
-			//wp_redirect( site_url('/'.$result['redirect_page'].'/') );
 		} 
 	}
 }

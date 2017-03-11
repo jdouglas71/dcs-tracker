@@ -3,7 +3,9 @@
 */
 
 #dcs-tracker-create-code,
-#dcs-tracker-create-agent-portal {
+#dcs-tracker-update-code,
+#dcs-tracker-create-agent-portal,
+#dcs-tracker-update-agent-portal {
 	padding: 10px;
 	background: #607d8b;
 	border-radius: 5px;
@@ -20,6 +22,12 @@ div.dcs-tracker-code {
 
 div.dcs-tracker-code table {
 	border-spacing: 10px;
+	width: 80%;
+	margin: auto;
+}
+
+div.dcs-tracker-code table td {
+	text-align: right;
 }
 
 div.dcs-tracker-ref-codes {
@@ -27,11 +35,12 @@ div.dcs-tracker-ref-codes {
 	border: 1px groove lightgray;
 	border-radius: 5px;
 	padding: 10px;
-	width: 80%;
+	width: 50%;
 }
 
 table.dcs-tracker-ref-codes {
 	border-spacing: 10px;
+	width: 100%;
 }
 
 table.dcs-tracker-ref-codes th {

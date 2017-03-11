@@ -65,4 +65,42 @@ jQuery(document).ready(function() {
 			window.open( response, "_self" );
 		});
 	});
+	
+	/** Update Codes */
+	jQuery('#dcs-tracker-update-code').click( function() {
+		var values = "";
+		jQuery('.dcs-tracker-code-delete:checkbox:checked').each(function () {
+			values = values.concat( jQuery(this).val()+";" );
+  		});
+  		
+  		jAlert( values, "Update Codes" );
+  		
+		var data = {
+			values : values,
+			action: 'dcs_tracker_update_codes',
+			dcs_tracker_update_codes_nonce: dcs_tracker_admin_script_vars.dcs_tracker_update_codes_nonce
+		};
+
+		jQuery.post( dcs_tracker_admin_script_vars.ajaxurl, data, function(response) {
+			window.open( response, "_self" );
+		});
+	});
+	
+	/** Update Agents */
+	jQuery('#dcs-tracker-update-agent-portal').click( function() {
+		var values = "";
+		jQuery('.dcs-tracker-agent-delete:checkbox:checked').each(function () {
+			values = values.concat( jQuery(this).val()+";" );
+  		});
+  		
+		var data = {
+			values : values,
+			action: 'dcs_tracker_update_agents',
+			dcs_tracker_update_agents_nonce: dcs_tracker_admin_script_vars.dcs_tracker_update_agents_nonce
+		};
+
+		jQuery.post( dcs_tracker_admin_script_vars.ajaxurl, data, function(response) {
+			window.open( response, "_self" );
+		});
+	});
 });

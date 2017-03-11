@@ -30,6 +30,8 @@ function dcs_tracker_load_admin_scripts()
 								"ajaxurl" => admin_url('admin-ajax.php'),
 								"dcs_tracker_create_code_nonce"=>wp_create_nonce("dcs_tracker_create_code"),
 								"dcs_tracker_create_agent_portal_nonce"=>wp_create_nonce("dcs_tracker_create_agent_portal"),
+								"dcs_tracker_update_agents_nonce"=>wp_create_nonce("dcs_tracker_update_agents"),
+								"dcs_tracker_update_codes_nonce"=>wp_create_nonce("dcs_tracker_update_codes"),
                             )
                       );
 }
@@ -113,10 +115,12 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Reference Code</th><th>Discount</th><th>Has Page?</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
+			$retval .= "<tr><th>Delete</th><th>Reference Code</th><th>Discount</th><th>Has Page?</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
 			foreach($ref_codes as $name => $values)
 			{ 
 				$retval .= "<tr>";
+				$retval .= "<td><input type='checkbox' class='dcs-tracker-code-delete' value='".$name."'></td>";
+
 				$retval .= "<td>".$name."</td>";
 				if( is_numeric($values['amount']) )
 				{
@@ -147,7 +151,8 @@ function dcs_tracker_admin_page()
 					$retval .= "<td></td>";
 				$retval .= "</tr>";
 			}
-			
+			$retval .= "<tr><td colspan=6 style='padding-top:100px;text-align:right;'><input type='submit' id='dcs-tracker-update-code' value='Update'></td></tr>";
+
 			$retval .= "</table>";
 			$retval .= "</div>";
 		}
@@ -184,10 +189,11 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Name</th><th>Agent Filter</th><th>Portal URL</th></tr>";
+			$retval .= "<tr><th>Delete</th><th>Name</th><th>Agent Filter</th><th>Portal URL</th></tr>";
 			foreach($agent_portals as $name => $values)
 			{ 
 				$retval .= "<tr>";
+				$retval .= "<td><input type='checkbox' class='dcs-tracker-agent-delete' value='".$name."'></td>";
 				$retval .= "<td>".$name."</td>";
 				
 				$retval .= "<td>".$values['agent_filter']."</td>";
@@ -196,6 +202,7 @@ function dcs_tracker_admin_page()
 
 				$retval .= "</tr>";
 			}
+			$retval .= "<tr><td colspan=4 style='text-align:right;padding-top:100px;'><input type='submit' id='dcs-tracker-update-agent-portal' value='Update'></td></tr>";
 			
 			$retval .= "</table>";
 			$retval .= "</div>";
@@ -340,5 +347,55 @@ function dcs_tracker_create_agent_portal()
 }
 add_action( 'wp_ajax_dcs_tracker_create_agent_portal', 'dcs_tracker_create_agent_portal' );
 add_action( 'wp_ajax_nopriv_dcs_tracker_create_agent_portal', 'dcs_tracker_create_agent_portal' );
+
+/**
+* Update Codes 
+*/
+function dcs_tracker_update_codes()
+{
+	check_ajax_referer( "dcs_tracker_update_codes", "dcs_tracker_update_codes_nonce" );
+	$discountArray = get_option("dcs_tracker_discounts", array());
+
+	$values = $_POST['values'];
+	$vals = explode( ";", $values );
+	foreach( $vals as $name )
+	{
+		unset($discountArray[$name]);
+	}
+	
+	update_option( "dcs_tracker_discounts", $discountArray );
+	
+	$status = "&updated=1";
+
+	echo wp_get_referer().$status;
+	die();
+}
+add_action( 'wp_ajax_dcs_tracker_update_codes', 'dcs_tracker_update_codes' );
+add_action( 'wp_ajax_nopriv_dcs_tracker_update_codes', 'dcs_tracker_update_codes' );
+
+/**
+* Update Agents 
+*/
+function dcs_tracker_update_agents()
+{
+	check_ajax_referer( "dcs_tracker_update_agents", "dcs_tracker_update_agents_nonce" );
+	$agent_portals = get_option("dcs_agent_portals", array());
+
+	$values = $_POST['values'];
+	$vals = explode( ";", $values );
+	foreach( $vals as $name )
+	{
+		unset($agent_portals[$name]);
+	}
+	
+	update_option( "dcs_agent_portals", $agent_portals );
+
+	$status = "&updated=1";
+
+	echo wp_get_referer().$status;
+	die();
+}
+add_action( 'wp_ajax_dcs_tracker_update_agents', 'dcs_tracker_update_agents' );
+add_action( 'wp_ajax_nopriv_dcs_tracker_update_agents', 'dcs_tracker_update_agents' );
 
 

@@ -22,12 +22,14 @@ function dcs_tracker_load_admin_scripts()
 	wp_enqueue_script('jquery-qtip', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.qtip.js'), array('jquery'), false, true);
 	wp_enqueue_script('jquery-alerts', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.alerts.js'), array('jquery'), "1.11", true);
 	wp_enqueue_script('dcs-tracker-admin-script', (WP_PLUGIN_URL.'/dcs-tracker/dcs-tracker-admin.js'), 
-				  array('jquery', 'jquery-alerts'), "0.6", true);
+				  array('jquery', 'jquery-alerts'), "0.7", true);
 				  
     //Register nonce values we can use to verify our ajax calls from the editor.
     wp_localize_script( "dcs-tracker-admin-script", "dcs_tracker_admin_script_vars",
                         array(
 								"ajaxurl" => admin_url('admin-ajax.php'),
+								"dcs_tracker_create_code_nonce"=>wp_create_nonce("dcs_tracker_create_code"),
+								"dcs_tracker_create_agent_portal_nonce"=>wp_create_nonce("dcs_tracker_create_agent_portal"),
                             )
                       );
 }
@@ -61,7 +63,8 @@ function dcs_tracker_admin_page()
 	$retval .= "<div class='wrap'>";
 	
 	$retval .= '<h2 class="nav-tab-wrapper">';
-    $retval .= '<a href="?page=dcs-tracker&tab=reference-codes" class="nav-tab">Reference Codes</a>';
+    $retval .= '<a href="?page=dcs_tracker&tab=reference-codes" class="nav-tab '.(($active_tab=='reference-codes')?'nav-tab-active':'').'">Reference Codes</a>';
+    $retval .= '<a href="?page=dcs_tracker&tab=agent-portal" class="nav-tab '.(($active_tab=='agent-portal')?'nav-tab-active':'').'">Agent Portals</a>';
 	$retval .= '</h2>';
 	
 	if( $active_tab == "reference-codes" )
@@ -144,11 +147,60 @@ function dcs_tracker_admin_page()
 					$retval .= "<td></td>";
 				$retval .= "</tr>";
 			}
+			
+			$retval .= "</table>";
+			$retval .= "</div>";
 		}
+	}	
+	else if( $active_tab == "agent-portal" )
+	{
+		if( isset($_GET['created']) )
+		{
+			$status = "The Agent Portal has been created.";
+		}
+	
+		if( isset($_GET['updated']) )
+		{
+			$status = "The Agent Portal has been updated.";
+		}
+
+		$agent_portals = get_option("dcs_agent_portals", array());
+		$retval .= "<h1>Agent Portals</h1>";
+		$retval .= "<hr class='dcs-tracker-line'>";
 		
+		$retval .= "<div class='dcs-tracker-code'>";
+		$retval .= "<table>";
+		$retval .= "<tr><td><label for='dcs-tracker-agent-name'>Name</label></td><td><input name='dcs-tracker-agent-name' id='dcs-tracker-agent-name'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-agent-filter'>Agent Filter</label></td><td><input name='dcs-tracker-agent-filter' id='dcs-tracker-agent-filter'></td></tr>";
+		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-agent-portal' value='Create Agent Portal'></td></tr>";
 		$retval .= "</table>";
 		$retval .= "</div>";
-	}	
+
+		$retval .= "<div class='dcs-tracker-ref-codes'>";
+		if( $agent_portals == NULL )
+		{
+			$retval .= "<h2>No Agent Portals Defined.</h2>";		
+		}
+		else
+		{
+			$retval .= "<table class='dcs-tracker-ref-codes'>";
+			$retval .= "<tr><th>Name</th><th>Agent Filter</th><th>Portal URL</th></tr>";
+			foreach($agent_portals as $name => $values)
+			{ 
+				$retval .= "<tr>";
+				$retval .= "<td>".$name."</td>";
+				
+				$retval .= "<td>".$values['agent_filter']."</td>";
+				
+				$retval .= "<td><a href='".site_url("/".$name)."'>".site_url("/portal/".$name)."</a></td>";
+
+				$retval .= "</tr>";
+			}
+			
+			$retval .= "</table>";
+			$retval .= "</div>";
+		}
+	}
 	
 	$retval .= "</div>";
 		
@@ -160,6 +212,8 @@ function dcs_tracker_admin_page()
 */
 function dcs_tracker_create_code()
 {
+	check_ajax_referer( "dcs_tracker_create_code", "dcs_tracker_create_code_nonce" );
+
 	$discountArray = get_option("dcs_tracker_discounts", array());
 
 	//Do stuff here
@@ -175,14 +229,6 @@ function dcs_tracker_create_code()
 		$amount /= 100;
 	}
 
-	if( array_key_exists($name,$discountArray) )
-	{
-		$status = "&updated=1";
-	}
-	else 
-	{
-		$status = "&created=1";
-	}
 	$discountArray[$name] = array( "amount" => $amount, 
 								   "type" => $type, 
 								   "redirect" => $redirect, 
@@ -198,30 +244,101 @@ function dcs_tracker_create_code()
 		$page = get_page_by_title( $name );
 		
 		$my_post = array(
-		  'post_title'    => wp_strip_all_tags( $name ),
-		  'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'"]',
-		  'post_status'   => 'publish',
-		  'post_author'   => get_current_user_id(),
-		  'post_type'     => 'page',
+			'post_title'    => wp_strip_all_tags( $name ),
+			'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'"]',
+			'post_status'   => 'publish',
+			'post_author'   => get_current_user_id(),
+			'post_type'     => 'page',
 		);
 		
 		if( $page == NULL )
  		{
 			// Insert the post into the database
 			wp_insert_post( $my_post );
+			$status = "&created=1";
 		}
 		else
 		{
 			$my_post['ID'] = $page->ID;
 			wp_update_post( $my_post );
+			$status = "&updated=1";
 		}
 	}
 	
-	echo wp_get_referer()."&status=1";
+	echo wp_get_referer().$status;
 	
 	die();
 }
 add_action( 'wp_ajax_dcs_tracker_create_code', 'dcs_tracker_create_code' );
 add_action( 'wp_ajax_nopriv_dcs_tracker_create_code', 'dcs_tracker_create_code' );
+
+/**
+* Create Agent Portal.
+*/
+function dcs_tracker_create_agent_portal()
+{
+	check_ajax_referer( "dcs_tracker_create_agent_portal", "dcs_tracker_create_agent_portal_nonce" );
+
+	$agent_portals = get_option("dcs_agent_portals", array());
+
+	//Do stuff here
+	$name = strtolower($_POST['name']);
+	$agent_filter = strtolower($_POST['agent_filter']);
+	$status = "";
+
+	$agent_portals[$name] = array( "agent_filter" => $agent_filter, 
+								 );
+								 
+	update_option( "dcs_agent_portals", $agent_portals );
+	
+	//Create portal parent page if necessary
+	$portal_page = get_page_by_title( 'portal' );
+	$portal_page_id = 0;
+	if( $portal_page == NULL )
+	{
+		$portal_post = array( 
+			'post_title' => "portal",
+			'post_status' => 'publish',
+			'post_author' => get_current_user_id(),
+			'post_type' => 'page',
+		);
+		$portal_page_id = wp_insert_post( $portal_post );
+	}
+	else
+	{
+		$portal_page_id = $portal_page->ID;
+	}
+	
+	//Does page with this title already exist?
+	$page = get_page_by_title( $name );
+	
+	$my_post = array(
+		'post_title'    => wp_strip_all_tags( $name ),
+		'post_content'  => '[ripcord_quote_machine agent_filter="'.$agent_filter.'"]',
+		'post_status'   => 'publish',
+		'post_author'   => get_current_user_id(),
+		'post_type'     => 'page',
+		'post_parent'   => $portal_page_id,
+	);
+	
+	if( $page == NULL )
+	{
+		// Insert the post into the database
+		wp_insert_post( $my_post );
+		$status = "&created=1";
+	}
+	else
+	{
+		$my_post['ID'] = $page->ID;
+		wp_update_post( $my_post );
+		$status = "&updated=1";
+	}
+	
+	echo wp_get_referer().$status;
+	
+	die();
+}
+add_action( 'wp_ajax_dcs_tracker_create_agent_portal', 'dcs_tracker_create_agent_portal' );
+add_action( 'wp_ajax_nopriv_dcs_tracker_create_agent_portal', 'dcs_tracker_create_agent_portal' );
 
 

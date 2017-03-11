@@ -32,7 +32,7 @@ jQuery(document).ready(function() {
 			redirect : redirect,
 			has_page : has_page,
 			action: 'dcs_tracker_create_code',
-			//ripcord_contact_page_submit_nonce: ripcord_contact_page_script_vars.ripcord_contact_page_submit_nonce
+			dcs_tracker_create_code_nonce: dcs_tracker_admin_script_vars.dcs_tracker_create_code_nonce
 		};
 
 		jQuery.post( dcs_tracker_admin_script_vars.ajaxurl, data, function(response) {
@@ -40,15 +40,29 @@ jQuery(document).ready(function() {
 		});
 	});
 	
-	/** Create Page click */
-	jQuery('#dcs-tracker-code-create-page').click( function() {
-		if( jQuery('input#dcs-tracker-code-create-page').is(":checked") )
+	/** Create Agent Portal click */
+	jQuery('#dcs-tracker-create-agent-portal').click( function() {
+		var name = jQuery('#dcs-tracker-agent-name').val();
+		var agent_filter = jQuery('#dcs-tracker-agent-filter').val();
+		
+		jQuery("div.dcs-tracker-error-message").hide();
+			
+		if( name == '' )
 		{
-			jQuery('tr#dcs-tracker-code-redirect-page').show();
+			jQuery("p#dcs-tracker-error-message").text( "The Agent Portal name cannot be blank." );
+			jQuery("div.dcs-tracker-error-message").show();
+			return;
 		}
-		else
-		{
-			jQuery('tr#dcs-tracker-code-redirect-page').hide();
-		}
+		
+		var data = {
+			name : name,
+			agent_filter: agent_filter,
+			action: 'dcs_tracker_create_agent_portal',
+			dcs_tracker_create_agent_portal_nonce: dcs_tracker_admin_script_vars.dcs_tracker_create_agent_portal_nonce
+		};
+
+		jQuery.post( dcs_tracker_admin_script_vars.ajaxurl, data, function(response) {
+			window.open( response, "_self" );
+		});
 	});
 });

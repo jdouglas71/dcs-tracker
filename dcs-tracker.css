@@ -2,7 +2,8 @@
 * DCS Tracker CSS file
 */
 
-#dcs-tracker-create-code {
+#dcs-tracker-create-code,
+#dcs-tracker-create-agent-portal {
 	padding: 10px;
 	background: #607d8b;
 	border-radius: 5px;

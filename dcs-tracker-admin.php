@@ -42,7 +42,7 @@ add_action('admin_enqueue_scripts', 'dcs_tracker_load_admin_scripts');
  */
 function dcs_tracker_admin_menu()
 {
-    add_options_page( 'DCS Tracker', 'DCS Tracker', 'administrator', 'dcs_tracker', 'dcs_tracker_admin_page');
+    add_menu_page( 'DCS Tracker', 'DCS Tracker', 'administrator', 'dcs_tracker', 'dcs_tracker_admin_page');
 }
 add_action( 'admin_menu', 'dcs_tracker_admin_menu' );
 

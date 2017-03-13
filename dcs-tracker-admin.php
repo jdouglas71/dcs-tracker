@@ -82,6 +82,7 @@ function dcs_tracker_admin_page()
 		}
 
 		$ref_codes = get_option("dcs_tracker_discounts", array());
+		ksort($ref_codes);
 
 		$retval .= "<h1>Reference Codes</h1>";
 		$retval .= "<hr class='dcs-tracker-line'>";
@@ -170,6 +171,7 @@ function dcs_tracker_admin_page()
 		}
 
 		$agent_portals = get_option("dcs_agent_portals", array());
+		ksort($agent_portals);
 		$retval .= "<h1>Agent Portals</h1>";
 		$retval .= "<hr class='dcs-tracker-line'>";
 		

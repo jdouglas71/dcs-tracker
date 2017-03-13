@@ -200,7 +200,7 @@ function dcs_tracker_admin_page()
 				
 				$retval .= "<td>".$values['agent_filter']."</td>";
 				
-				$retval .= "<td><a href='".site_url("/".$name)."'>".site_url("/portal/".$name)."</a></td>";
+				$retval .= "<td><a href='".site_url("/portal/".$name)."'>".site_url("/portal/".$name)."</a></td>";
 
 				$retval .= "</tr>";
 			}

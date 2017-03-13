@@ -21,8 +21,6 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 								'tracking_id' => '',
 							), $atts ) );
 							
-	error_log( "Landing Page shortcode: ".$tracking_id.PHP_EOL,3,dirname(__FILE__)."/martha.log" );
-							
 	//Add the tracking id to the session
 	if( $tracking_id !== '' )
 	{
@@ -33,7 +31,6 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 		$_SESSION["dcs_referral_code"] = $tracking_id;
 	}
 	
-	error_log( "Redirecting to: " .site_url('/'.$redirect_page.'/').PHP_EOL,3,dirname(__FILE__)."/martha.log" );
 	wp_redirect( site_url('/'.$redirect_page.'/') );
 	exit();
 }
@@ -50,7 +47,7 @@ function dcs_pre_process_shortcode()
 	{
 		$regex = get_shortcode_regex();
 		preg_match_all('/'.$regex.'/',$post->post_content,$matches);
-		if (!empty($matches[2]) && in_array('dcs_tracker_landing_page',$matches[2]) && is_user_logged_in()) 
+		if (!empty($matches[2]) && in_array('dcs_tracker_landing_page',$matches[2])) 
 		{
 			preg_match_all("/([^,= ]+)=([^,= ]+)/", $matches[3][0], $r); 
 			$result = array_combine($r[1], str_replace("\"", "",$r[2]));

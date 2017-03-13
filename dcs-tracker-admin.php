@@ -240,11 +240,7 @@ function dcs_tracker_create_code()
 								   "type" => $type, 
 								   "redirect" => $redirect, 
 								   "has_page" => $has_page, );
-	
-	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
-
-	update_option( "dcs_tracker_discounts", $discountArray );
-	
+		
 	if( $has_page == "true" )
 	{
 		//Does page with this title already exist?
@@ -258,19 +254,22 @@ function dcs_tracker_create_code()
 			'post_type'     => 'page',
 		);
 		
-		if( $page == NULL )
- 		{
+		//if( $page == NULL )
+ 		//{
 			// Insert the post into the database
 			wp_insert_post( $my_post );
 			$status = "&created=1";
-		}
-		else
-		{
-			$my_post['ID'] = $page->ID;
-			wp_update_post( $my_post );
-			$status = "&updated=1";
-		}
+		//}
+		//else
+		//{
+		//	$my_post['ID'] = $page->ID;
+		//	wp_update_post( $my_post );
+		//	$status = "&updated=1";
+		//}
 	}
+	
+	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
+	update_option( "dcs_tracker_discounts", $discountArray );
 	
 	echo wp_get_referer().$status;
 	
@@ -328,18 +327,18 @@ function dcs_tracker_create_agent_portal()
 		'post_parent'   => $portal_page_id,
 	);
 	
-	if( $page == NULL )
-	{
+	//if( $page == NULL )
+	//{
 		// Insert the post into the database
 		wp_insert_post( $my_post );
 		$status = "&created=1";
-	}
-	else
-	{
-		$my_post['ID'] = $page->ID;
-		wp_update_post( $my_post );
-		$status = "&updated=1";
-	}
+	//}
+	//else
+	//{
+	//	$my_post['ID'] = $page->ID;
+	//	wp_update_post( $my_post );
+	//	$status = "&updated=1";
+	//}
 	
 	echo wp_get_referer().$status;
 	

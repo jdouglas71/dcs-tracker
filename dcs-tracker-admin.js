@@ -115,4 +115,24 @@ jQuery(document).ready(function() {
 			window.open( response, "_self" );
 		});
 	});
+
+	/** Update Google Options */
+	jQuery('#dcs-tracker-update-google-options').click( function() {
+		var flag = "false";
+		if( jQuery('#dcs-tracker-google-analytics-flag').is(":checked") )
+			flag = "true";
+		var code = jQuery('#dcs-tracker-google-analytics-code').val();  		
+		
+		var data = {
+			flag: flag,
+			code: code,
+			action: 'dcs_tracker_update_google_options',
+			dcs_tracker_update_google_options_nonce: dcs_tracker_admin_script_vars.dcs_tracker_update_google_options_nonce
+		};
+
+		jQuery.post( dcs_tracker_admin_script_vars.ajaxurl, data, function(response) {
+			window.open( response, "_self" );
+		});
+	});
+
 });

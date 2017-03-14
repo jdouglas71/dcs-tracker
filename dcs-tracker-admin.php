@@ -22,7 +22,7 @@ function dcs_tracker_load_admin_scripts()
 	wp_enqueue_script('jquery-qtip', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.qtip.js'), array('jquery'), false, true);
 	wp_enqueue_script('jquery-alerts', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.alerts.js'), array('jquery'), "1.11", true);
 	wp_enqueue_script('dcs-tracker-admin-script', (WP_PLUGIN_URL.'/dcs-tracker/dcs-tracker-admin.js'), 
-				  array('jquery', 'jquery-alerts'), "0.8", true);
+				  array('jquery', 'jquery-alerts'), "0.85", true);
 				  
     //Register nonce values we can use to verify our ajax calls from the editor.
     wp_localize_script( "dcs-tracker-admin-script", "dcs_tracker_admin_script_vars",
@@ -32,6 +32,7 @@ function dcs_tracker_load_admin_scripts()
 								"dcs_tracker_create_agent_portal_nonce"=>wp_create_nonce("dcs_tracker_create_agent_portal"),
 								"dcs_tracker_update_agents_nonce"=>wp_create_nonce("dcs_tracker_update_agents"),
 								"dcs_tracker_update_codes_nonce"=>wp_create_nonce("dcs_tracker_update_codes"),
+								"dcs_tracker_update_google_options_nonce"=>wp_create_nonce("dcs_tracker_update_google_options"),
                             )
                       );
 }
@@ -67,6 +68,7 @@ function dcs_tracker_admin_page()
 	$retval .= '<h2 class="nav-tab-wrapper">';
     $retval .= '<a href="?page=dcs_tracker&tab=reference-codes" class="nav-tab '.(($active_tab=='reference-codes')?'nav-tab-active':'').'">Reference Codes</a>';
     $retval .= '<a href="?page=dcs_tracker&tab=agent-portal" class="nav-tab '.(($active_tab=='agent-portal')?'nav-tab-active':'').'">Agent Portals</a>';
+    $retval .= '<a href="?page=dcs_tracker&tab=google-opts" class="nav-tab '.(($active_tab=='google-opts')?'nav-tab-active':'').'">Google Options</a>';
 	$retval .= '</h2>';
 	
 	if( $active_tab == "reference-codes" )
@@ -209,6 +211,22 @@ function dcs_tracker_admin_page()
 			$retval .= "</table>";
 			$retval .= "</div>";
 		}
+	}
+	else if( $active_tab == "google-opts" )
+	{
+		$google_analytics_flag = get_option( "dcs_tracker_google_analytics_flag" );
+		$google_analytics_id = get_option( "dcs_tracker_google_analytics_id" );
+
+		$retval .= "<h1>Google Options</h1>";
+		$retval .= "<hr class='dcs-tracker-line'>";
+		$retval .= "<div class='dcs-tracker-code'>";
+		
+		$retval .= "<table>";
+		$retval .= "<tr><td><label for='dcs-tracker-google-analytics-flag'>Embed Google Analytics</label></td><td><input type='checkbox' name='dcs-tracker-google-analytics-flag' id='dcs-tracker-google-analytics-flag' ".($google_analytics_flag=="true"?"checked":"")."></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-google-analytics-code'>Google Analytics Code</label></td><td><input name='dcs-tracker-google-analytics-code' id='dcs-tracker-google-analytics-code' value='".$google_analytics_id."'></td></tr>";
+		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-update-google-options' value='Update Google Options'></td></tr>";
+		$retval .= "</table>";
+		$retval .= "</div>";
 	}
 	
 	$retval .= "</div>";
@@ -398,5 +416,26 @@ function dcs_tracker_update_agents()
 }
 add_action( 'wp_ajax_dcs_tracker_update_agents', 'dcs_tracker_update_agents' );
 add_action( 'wp_ajax_nopriv_dcs_tracker_update_agents', 'dcs_tracker_update_agents' );
+
+/**
+* Update Google Options 
+*/
+function dcs_tracker_update_google_options()
+{
+	check_ajax_referer( "dcs_tracker_update_google_options", "dcs_tracker_update_google_options_nonce" );
+
+	$flag = $_POST['flag'];
+	$code = $_POST['code'];
+			
+	update_option( "dcs_tracker_google_analytics_flag", $flag );
+	update_option( "dcs_tracker_google_analytics_id", $code );
+
+	$status = "&updated=1";
+
+	echo wp_get_referer().$status;
+	die();
+}
+add_action( 'wp_ajax_dcs_tracker_update_google_options', 'dcs_tracker_update_google_options' );
+add_action( 'wp_ajax_nopriv_dcs_tracker_update_google_options', 'dcs_tracker_update_google_options' );
 
 

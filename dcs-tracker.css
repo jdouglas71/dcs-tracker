@@ -5,7 +5,8 @@
 #dcs-tracker-create-code,
 #dcs-tracker-update-code,
 #dcs-tracker-create-agent-portal,
-#dcs-tracker-update-agent-portal {
+#dcs-tracker-update-agent-portal,
+#dcs-tracker-update-google-options {
 	padding: 10px;
 	background: #607d8b;
 	border-radius: 5px;

@@ -40,6 +40,18 @@ jQuery(document).ready(function() {
 		});
 	});
 	
+	/** Create Page click */
+ 	jQuery('#dcs-tracker-code-create-page').click( function() {
+ 		if( jQuery('input#dcs-tracker-code-create-page').is(":checked") )
+ 		{
+ 			jQuery('tr#dcs-tracker-code-redirect-page').show();
+ 		}
+ 		else
+ 		{
+ 			jQuery('tr#dcs-tracker-code-redirect-page').hide();
+ 		}
+ 	});
+	
 	/** Create Agent Portal click */
 	jQuery('#dcs-tracker-create-agent-portal').click( function() {
 		var name = jQuery('#dcs-tracker-agent-name').val();

@@ -68,7 +68,6 @@ function dcs_tracker_google_tracking_code()
 	$google_analytics_flag = get_option( "dcs_tracker_google_analytics_flag" );
 	$google_analytics_id = get_option( "dcs_tracker_google_analytics_id" );
 	
-
 	if( ($google_analytics_flag == "1") && ($google_analytics_id != "") )
 	{
         echo "<script type='text/javascript'>

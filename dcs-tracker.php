@@ -67,6 +67,10 @@ function dcs_tracker_google_tracking_code()
 
 	$google_analytics_flag = get_option( "dcs_tracker_google_analytics_flag" );
 	$google_analytics_id = get_option( "dcs_tracker_google_analytics_id" );
+	
+	//JGD Hardcode for now
+	$google_analytics_flag = 1;
+	$google_analytics_id = "UA-50265511-1";
 
 	if( ($google_analytics_flag == "1") && ($google_analytics_id != "") )
 	{

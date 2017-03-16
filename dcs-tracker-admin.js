@@ -7,9 +7,8 @@ jQuery(document).ready(function() {
 		var type = "flat";
 		var redirect = "";
 		var has_page = "false";
-		if( jQuery('#dcs-tracker-code-type').is(":checked") )
-			type = "percentage"; 
-			
+		var type = jQuery('#dcs-tracker-code-type').val();
+					
 		if( jQuery('#dcs-tracker-code-create-page').is(":checked") )
 		{
 			redirect = jQuery('#dcs-tracker-code-redirect').val();

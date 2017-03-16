@@ -22,7 +22,7 @@ function dcs_tracker_load_admin_scripts()
 	wp_enqueue_script('jquery-qtip', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.qtip.js'), array('jquery'), false, true);
 	wp_enqueue_script('jquery-alerts', (WP_PLUGIN_URL.'/dcs-tracker/js/jquery.alerts.js'), array('jquery'), "1.11", true);
 	wp_enqueue_script('dcs-tracker-admin-script', (WP_PLUGIN_URL.'/dcs-tracker/dcs-tracker-admin.js'), 
-				  array('jquery', 'jquery-alerts'), "0.85", true);
+				  array('jquery', 'jquery-alerts'), "0.86", true);
 				  
     //Register nonce values we can use to verify our ajax calls from the editor.
     wp_localize_script( "dcs-tracker-admin-script", "dcs_tracker_admin_script_vars",
@@ -103,7 +103,7 @@ function dcs_tracker_admin_page()
 		$retval .= "<table>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-name'>Reference Code</label></td><td><input name='dcs-tracker-code-name' id='dcs-tracker-code-name'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Discount Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
-		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Percentage</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-type' id='dcs-tracker-code-type'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Type</label></td><td><select name='dcs-tracker-code-type' id='dcs-tracker-code-type'><option value='flat'>Discount</option><option value='percentage'>Percentage</option><option value='flat_rate'>Flat Rate</option></select></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-create-page'>Create Page</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-create-page' id='dcs-tracker-code-create-page'></td></tr>";
 		$retval .= "<tr id='dcs-tracker-code-redirect-page' style='display:none;'><td><label for='dcs-tracker-code-redirect'>Redirect Page</label></td><td><input name='dcs-tracker-code-redirect' id='dcs-tracker-code-redirect'></td></tr>";		
 		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-code' value='Create Code'></td></tr>";
@@ -118,16 +118,24 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Delete</th><th>Reference Code</th><th>Discount</th><th>Has Page?</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
+			$retval .= "<tr><th>Delete</th><th>Reference Code</th><th>Discount Type</th><th>Discount</th><th>Has Page?</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
 			foreach($ref_codes as $name => $values)
 			{ 
 				$retval .= "<tr>";
 				$retval .= "<td><input type='checkbox' class='dcs-tracker-code-delete' value='".$name."'></td>";
 
 				$retval .= "<td>".$name."</td>";
+				if( $values['amount'] != '' )
+				{
+					$retval .= "<td>".$values['type']."</td>";
+				}
+				else
+				{
+					$retval .= "<td>N/A</td>";
+				}
 				if( is_numeric($values['amount']) )
 				{
-					if( $values['type'] == "flat" )
+					if( $values['type'] != "percentage" )
 					{
 						$retval .= "<td>$".number_format($values['amount'], 2)."</td>";
 					}
@@ -146,6 +154,7 @@ function dcs_tracker_admin_page()
 				
 				$redirect = "";
 				if( isset($values['redirect']) ) $redirect = $values['redirect'];
+				if( $redirect == '' ) $redirect = "Home";
 				$retval .= "<td>".$redirect."</td>";
 				
 				if( $has_page == "true" )

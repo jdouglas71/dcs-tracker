@@ -102,6 +102,7 @@ function dcs_tracker_admin_page()
 		$retval .= "<div class='dcs-tracker-code'>";
 		$retval .= "<table>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-name'>Reference Code</label></td><td><input name='dcs-tracker-code-name' id='dcs-tracker-code-name'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-allow-international'>Allow International TI</label></td><td><input type='checkbox' name='dcs-tracker-allow-international' id='dcs-tracker-allow-international'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Discount Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Type</label></td><td><select name='dcs-tracker-code-type' id='dcs-tracker-code-type'><option value='flat'>Discount</option><option value='percentage'>Percentage</option><option value='flat_rate'>Flat Rate</option></select></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-create-page'>Create Page</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-create-page' id='dcs-tracker-code-create-page'></td></tr>";
@@ -118,13 +119,21 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Delete</th><th>Reference Code</th><th>Discount Type</th><th>Discount</th><th>Has Page?</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
+			$retval .= "<tr><th>Delete</th><th>Reference Code</th><th>Allow International TI</th><th>Discount Type</th><th>Discount</th><th>Has Page?</th><th>Redirect Page</th><th>Landing Page URL</th></tr>";
 			foreach($ref_codes as $name => $values)
 			{ 
 				$retval .= "<tr>";
 				$retval .= "<td><input type='checkbox' class='dcs-tracker-code-delete' value='".$name."'></td>";
 
 				$retval .= "<td>".$name."</td>";
+				
+				$allow_international = "false";
+				if( isset($values['allow_international']) )
+				{
+					$allow_international = $values['allow_international'];
+				}
+				$retval .= "<td>".$allow_international."</td>";
+								
 				if( $values['amount'] != '' )
 				{
 					$retval .= "<td>".$values['type']."</td>";
@@ -133,6 +142,7 @@ function dcs_tracker_admin_page()
 				{
 					$retval .= "<td>N/A</td>";
 				}
+				
 				if( is_numeric($values['amount']) )
 				{
 					if( $values['type'] != "percentage" )
@@ -190,6 +200,7 @@ function dcs_tracker_admin_page()
 		$retval .= "<table>";
 		$retval .= "<tr><td><label for='dcs-tracker-agent-name'>Name</label></td><td><input name='dcs-tracker-agent-name' id='dcs-tracker-agent-name'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-agent-filter'>Agent Filter</label></td><td><input name='dcs-tracker-agent-filter' id='dcs-tracker-agent-filter'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-allow-international'>Allow International TI</label></td><td><input type='checkbox' name='dcs-tracker-allow-international' id='dcs-tracker-allow-international'></td></tr>";
 		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-agent-portal' value='Create Agent Portal'></td></tr>";
 		$retval .= "</table>";
 		$retval .= "</div>";
@@ -202,7 +213,7 @@ function dcs_tracker_admin_page()
 		else
 		{
 			$retval .= "<table class='dcs-tracker-ref-codes'>";
-			$retval .= "<tr><th>Delete</th><th>Name</th><th>Agent Filter</th><th>Portal URL</th></tr>";
+			$retval .= "<tr><th>Delete</th><th>Name</th><th>Agent Filter</th><th>Allow International TI</th><th>Portal URL</th></tr>";
 			foreach($agent_portals as $name => $values)
 			{ 
 				$retval .= "<tr>";
@@ -210,6 +221,14 @@ function dcs_tracker_admin_page()
 				$retval .= "<td>".$name."</td>";
 				
 				$retval .= "<td>".$values['agent_filter']."</td>";
+
+				$allow_international = "false";
+				if( isset($values['allow_international']) )
+				{
+					$allow_international = $values['allow_international'];
+				}
+				$retval .= "<td>".$allow_international."</td>";
+
 				
 				$retval .= "<td><a href='".site_url("/portal/".$name)."'>".site_url("/portal/".$name)."</a></td>";
 
@@ -254,6 +273,7 @@ function dcs_tracker_create_code()
 
 	//Do stuff here
 	$name = strtolower($_POST['name']);
+	$allow_international = $_POST['allow_international'];
 	$amount = $_POST['amount'];
 	$type = $_POST['type'];
 	$redirect = $_POST['redirect'];
@@ -268,7 +288,8 @@ function dcs_tracker_create_code()
 	$discountArray[$name] = array( "amount" => $amount, 
 								   "type" => $type, 
 								   "redirect" => $redirect, 
-								   "has_page" => $has_page, );
+								   "has_page" => $has_page,
+								   "allow_international" => $allow_international );
 		
 	if( $has_page == "true" )
 	{
@@ -283,18 +304,10 @@ function dcs_tracker_create_code()
 			'post_type'     => 'page',
 		);
 		
-		//if( $page == NULL )
- 		//{
-			// Insert the post into the database
-			wp_insert_post( $my_post );
-			$status = "&created=1";
-		//}
-		//else
-		//{
-		//	$my_post['ID'] = $page->ID;
-		//	wp_update_post( $my_post );
-		//	$status = "&updated=1";
-		//}
+		// Insert the post into the database
+		$page_id = wp_insert_post( $my_post );
+		$status = "&created=1";
+		$discountArray[$name]["ID"] = $page_id;
 	}
 	
 	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
@@ -319,9 +332,11 @@ function dcs_tracker_create_agent_portal()
 	//Do stuff here
 	$name = strtolower($_POST['name']);
 	$agent_filter = strtolower($_POST['agent_filter']);
+	$allow_international = $_POST['allow_international'];
 	$status = "";
 
 	$agent_portals[$name] = array( "agent_filter" => $agent_filter, 
+								   "allow_international" => $allow_international, 	
 								 );
 								 
 	update_option( "dcs_agent_portals", $agent_portals );
@@ -349,25 +364,17 @@ function dcs_tracker_create_agent_portal()
 	
 	$my_post = array(
 		'post_title'    => wp_strip_all_tags( $name ),
-		'post_content'  => '[ripcord_quote_machine agent_filter="'.$agent_filter.'"]',
+		'post_content'  => '[ripcord_quote_machine agent_filter="'.$agent_filter.'" allow_international_ti="'.$allow_international.'"]',
 		'post_status'   => 'publish',
 		'post_author'   => get_current_user_id(),
 		'post_type'     => 'page',
 		'post_parent'   => $portal_page_id,
 	);
 	
-	//if( $page == NULL )
-	//{
-		// Insert the post into the database
-		wp_insert_post( $my_post );
-		$status = "&created=1";
-	//}
-	//else
-	//{
-	//	$my_post['ID'] = $page->ID;
-	//	wp_update_post( $my_post );
-	//	$status = "&updated=1";
-	//}
+	// Insert the post into the database
+	$post_id = wp_insert_post( $my_post );
+	$status = "&created=1";
+	$agent_portals[$name]['ID'] = $post_id;
 	
 	echo wp_get_referer().$status;
 	

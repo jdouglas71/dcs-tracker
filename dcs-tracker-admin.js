@@ -7,12 +7,18 @@ jQuery(document).ready(function() {
 		var type = "flat";
 		var redirect = "";
 		var has_page = "false";
+		var allow_international = "false";
 		var type = jQuery('#dcs-tracker-code-type').val();
 					
 		if( jQuery('#dcs-tracker-code-create-page').is(":checked") )
 		{
 			redirect = jQuery('#dcs-tracker-code-redirect').val();
 			has_page = "true";
+		}			
+
+		if( jQuery('#dcs-tracker-allow-international').is(":checked") )
+		{
+			allow_international = "true";
 		}			
 			
 		jQuery("div.dcs-tracker-error-message").hide();
@@ -30,6 +36,7 @@ jQuery(document).ready(function() {
 			type : type,
 			redirect : redirect,
 			has_page : has_page,
+			allow_international: allow_international,
 			action: 'dcs_tracker_create_code',
 			dcs_tracker_create_code_nonce: dcs_tracker_admin_script_vars.dcs_tracker_create_code_nonce
 		};
@@ -55,6 +62,12 @@ jQuery(document).ready(function() {
 	jQuery('#dcs-tracker-create-agent-portal').click( function() {
 		var name = jQuery('#dcs-tracker-agent-name').val();
 		var agent_filter = jQuery('#dcs-tracker-agent-filter').val();
+		var allow_international = "false";
+		
+		if( jQuery('#dcs-tracker-allow-international').is(":checked") )
+		{
+			allow_international = "true";
+		}			
 		
 		jQuery("div.dcs-tracker-error-message").hide();
 			
@@ -68,6 +81,7 @@ jQuery(document).ready(function() {
 		var data = {
 			name : name,
 			agent_filter: agent_filter,
+			allow_international: allow_international,
 			action: 'dcs_tracker_create_agent_portal',
 			dcs_tracker_create_agent_portal_nonce: dcs_tracker_admin_script_vars.dcs_tracker_create_agent_portal_nonce
 		};

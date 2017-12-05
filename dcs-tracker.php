@@ -31,7 +31,9 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 		$_SESSION["dcs_referral_code"] = $tracking_id;
 	}
 	
-	wp_redirect( site_url('/'.$redirect_page.'/') );
+	//JGD: Add the tracking id to the end of the URL so it can be tracked via google analytics.
+	//JGD: https://www.newmediacampaigns.com/blog/how-to-track-landing-page-redirects-using-google-analytics
+	wp_redirect( site_url('/'.$redirect_page.'?'.$tracking_id) );
 	exit();
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );

@@ -55,6 +55,7 @@ function dcs_tracker_admin_page()
 	$status = NULL;
 
 	error_log( "GET: ".print_r($_GET,true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
+	//error_log( "POST Values: ".print_r(get_page_template_slug(447),true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 	
 	$retval = "";
 	$active_tab = "reference-codes";
@@ -86,7 +87,7 @@ function dcs_tracker_admin_page()
 		$ref_codes = get_option("dcs_tracker_discounts", array());
 		ksort($ref_codes);
 
-		$retval .= "<h1>Reference Codes</h1>";
+		$retval .= "<h1>Reference Codes/MegaPortals</h1>";
 		$retval .= "<hr class='dcs-tracker-line'>";
 		
 		if( $status == NULL )
@@ -106,6 +107,7 @@ function dcs_tracker_admin_page()
 		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Discount Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Type</label></td><td><select name='dcs-tracker-code-type' id='dcs-tracker-code-type'><option value='flat'>Discount</option><option value='percentage'>Percentage</option><option value='flat_rate'>Flat Rate</option></select></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-create-page'>Create Page</label></td><td style='text-align:right;'><input type='checkbox' name='dcs-tracker-code-create-page' id='dcs-tracker-code-create-page'></td></tr>";
+		$retval .= "<tr id='dcs-tracker-code-redirect-page-parent' style='display:none;'><td><label for='dcs-tracker-code-redirect-parent'>Parent Redirect Page (portal)</label></td><td><input type='checkbox' name='dcs-tracker-code-redirect-parent' id='dcs-tracker-code-redirect-parent'></td></tr>";		
 		$retval .= "<tr id='dcs-tracker-code-redirect-page' style='display:none;'><td><label for='dcs-tracker-code-redirect'>Redirect Page</label></td><td><input name='dcs-tracker-code-redirect' id='dcs-tracker-code-redirect'></td></tr>";		
 		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-code' value='Create Code'></td></tr>";
 		$retval .= "</table>";
@@ -167,8 +169,13 @@ function dcs_tracker_admin_page()
 				if( $redirect == '' ) $redirect = "Home";
 				$retval .= "<td>".$redirect."</td>";
 				
+				$use_portal_parent = "false";
+				if( isset($values['use_portal_parent']) ) $use_portal_parent = $values['use_portal_parent'];
+				$parent_page = "/";
+				if( $use_portal_parent == "true" ) $parent_page = "/portal/";
+				
 				if( $has_page == "true" )
-					$retval .= "<td><a href='".site_url("/".$name)."'>".site_url("/".$name)."</a></td>";
+					$retval .= "<td><a href='".site_url($parent_page.$name)."'>".site_url($parent_page.$name)."</a></td>";
 				else
 					$retval .= "<td></td>";
 				$retval .= "</tr>";
@@ -278,6 +285,7 @@ function dcs_tracker_create_code()
 	$type = $_POST['type'];
 	$redirect = $_POST['redirect'];
 	$has_page = $_POST['has_page'];
+	$use_portal_parent = $_POST['use_portal_parent'];
 	$status = "";
 
 	if( $type == "percentage" )
@@ -289,10 +297,32 @@ function dcs_tracker_create_code()
 								   "type" => $type, 
 								   "redirect" => $redirect, 
 								   "has_page" => $has_page,
-								   "allow_international" => $allow_international );
+								   "allow_international" => $allow_international,
+								   "use_portal_parent" => $use_portal_parent );
 		
 	if( $has_page == "true" )
 	{
+		//Create portal parent page if necessary
+		$portal_page = get_page_by_title( 'portal' );
+		$portal_page_id = 0;
+		if( $use_portal_parent == "true" )
+		{
+			if( $portal_page == NULL )
+			{
+				$portal_post = array( 
+					'post_title' => "portal",
+					'post_status' => 'publish',
+					'post_author' => get_current_user_id(),
+					'post_type' => 'page',
+				);
+				$portal_page_id = wp_insert_post( $portal_post );
+			}
+			else
+			{
+				$portal_page_id = $portal_page->ID;
+			}
+		}
+	
 		//Does page with this title already exist?
 		$page = get_page_by_title( $name );
 		
@@ -302,6 +332,8 @@ function dcs_tracker_create_code()
 			'post_status'   => 'publish',
 			'post_author'   => get_current_user_id(),
 			'post_type'     => 'page',
+			'post_parent'   => $portal_page_id,
+			'page_template' => "page-templates/page_fullwidth.php",
 		);
 		
 		// Insert the post into the database
@@ -369,6 +401,7 @@ function dcs_tracker_create_agent_portal()
 		'post_author'   => get_current_user_id(),
 		'post_type'     => 'page',
 		'post_parent'   => $portal_page_id,
+		'page_template' => "page-templates/page_fullwidth.php",
 	);
 	
 	// Insert the post into the database

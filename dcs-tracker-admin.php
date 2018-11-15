@@ -54,7 +54,7 @@ function dcs_tracker_admin_page()
 {
 	$status = NULL;
 
-	error_log( "GET: ".print_r($_GET,true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
+	//error_log( "GET: ".print_r($_GET,true).PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 	
 	$retval = "";
 	$active_tab = "reference-codes";
@@ -310,7 +310,7 @@ function dcs_tracker_create_code()
 		$discountArray[$name]["ID"] = $page_id;
 	}
 	
-	error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
+	//error_log( "Name: ".$name." Amount: ".$amount." Type: ".$type." Redirect: ".$redirect.PHP_EOL,3,dirname(__FILE__)."/tracker.log" );
 	update_option( "dcs_tracker_discounts", $discountArray );
 	
 	echo wp_get_referer().$status;

@@ -7,6 +7,7 @@ jQuery(document).ready(function() {
 		var type = "flat";
 		var redirect = "";
 		var has_page = "false";
+		var use_portal_parent = "false";
 		var allow_international = "false";
 		var type = jQuery('#dcs-tracker-code-type').val();
 					
@@ -14,6 +15,8 @@ jQuery(document).ready(function() {
 		{
 			redirect = jQuery('#dcs-tracker-code-redirect').val();
 			has_page = "true";
+			if( jQuery('#dcs-tracker-code-redirect-parent').is(":checked") )
+				use_portal_parent = "true";
 		}			
 
 		if( jQuery('#dcs-tracker-allow-international').is(":checked") )
@@ -36,6 +39,7 @@ jQuery(document).ready(function() {
 			type : type,
 			redirect : redirect,
 			has_page : has_page,
+			use_portal_parent : use_portal_parent,
 			allow_international: allow_international,
 			action: 'dcs_tracker_create_code',
 			dcs_tracker_create_code_nonce: dcs_tracker_admin_script_vars.dcs_tracker_create_code_nonce
@@ -50,10 +54,12 @@ jQuery(document).ready(function() {
  	jQuery('#dcs-tracker-code-create-page').click( function() {
  		if( jQuery('input#dcs-tracker-code-create-page').is(":checked") )
  		{
+ 			jQuery('tr#dcs-tracker-code-redirect-page-parent').show();
  			jQuery('tr#dcs-tracker-code-redirect-page').show();
  		}
  		else
  		{
+ 			jQuery('tr#dcs-tracker-code-redirect-page-parent').hide();
  			jQuery('tr#dcs-tracker-code-redirect-page').hide();
  		}
  	});

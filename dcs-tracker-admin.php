@@ -336,13 +336,13 @@ function dcs_tracker_create_code()
 		// Insert the post into the database
 		$page_id = wp_insert_post( $my_post );
 		$status = "&created=1";
-		//$discountArray[$name]["ID"] = $page_id;
+		$discountArray[$name]["ID"] = $page_id;
 	}
 	
-	//update_option( "dcs_tracker_discounts", $discountArray );
+	update_option( "dcs_tracker_discounts", $discountArray );
 	
 	echo wp_get_referer().$status;
-	
+	//echo "https://espn.com";
 	die();
 }
 add_action( 'wp_ajax_dcs_tracker_create_code', 'dcs_tracker_create_code' );

@@ -336,7 +336,7 @@ function dcs_tracker_create_code()
 		// Insert the post into the database
 		$page_id = wp_insert_post( $my_post );
 		$status = "&created=1";
-		$discountArray[$name]["ID"] = $page_id;
+		//$discountArray[$name]["ID"] = $page_id;
 	}
 	
 	//update_option( "dcs_tracker_discounts", $discountArray );

@@ -194,6 +194,11 @@ function dcs_tracker_admin_page()
 		{
 			$status = "The Agent Portal has been updated.";
 		}
+		
+		if( isset($_GET['error']) )
+		{
+			$status = $_GET['error_message'];
+		}
 
 		$agent_portals = get_option("dcs_agent_portals", array());
 		ksort($agent_portals);
@@ -335,8 +340,15 @@ function dcs_tracker_create_code()
 		
 		// Insert the post into the database
 		$page_id = wp_insert_post( $my_post );
-		$status = "&created=1";
-		$discountArray[$name]["ID"] = $page_id;
+		if( !is_wp_error($page_id) )
+		{
+			$status = "&created=1";
+			$discountArray[$name]["ID"] = $page_id;
+		}
+		else
+		{
+			$status = "&error=1?error_message=".$page_id->get_error_message();
+		}	
 	}
 	
 	update_option( "dcs_tracker_discounts", $discountArray );

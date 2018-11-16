@@ -339,15 +339,15 @@ function dcs_tracker_create_code()
 		);
 		
 		// Insert the post into the database
-		$page_id = wp_insert_post( $my_post );
-		if( !is_wp_error($page_id) )
+		$result = wp_insert_post( $my_post, true );
+		if( !is_wp_error($result) )
 		{
 			$status = "&created=1";
-			$discountArray[$name]["ID"] = $page_id;
+			$discountArray[$name]["ID"] = $result;
 		}
 		else
 		{
-			$status = "&error=1?error_message=".$page_id->get_error_message();
+			$status = "&error=1?error_message=".$result->get_error_message();
 		}	
 	}
 	

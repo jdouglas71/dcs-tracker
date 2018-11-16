@@ -339,7 +339,7 @@ function dcs_tracker_create_code()
 		$discountArray[$name]["ID"] = $page_id;
 	}
 	
-	update_option( "dcs_tracker_discounts", $discountArray );
+	//update_option( "dcs_tracker_discounts", $discountArray );
 	
 	echo wp_get_referer().$status;
 	

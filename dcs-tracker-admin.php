@@ -301,6 +301,8 @@ function dcs_tracker_create_code()
 								   "has_page" => $has_page,
 								   "allow_international" => $allow_international,
 								   "use_portal_parent" => $use_portal_parent );
+
+	update_option( "dcs_tracker_discounts", $discountArray );
 		
 	if( $has_page == "true" )
 	{

@@ -332,7 +332,7 @@ function dcs_tracker_create_code()
 		
 		$my_post = array(
 			'post_title'    => wp_strip_all_tags( $name ),
-			'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'"]',
+			'post_content'  => '[dcs_tracker_landing_page tracking_id="'.$name.'" redirect_page="'.$redirect.'" allow_international_ti="'.$allow_international.']',
 			'post_status'   => 'publish',
 			'post_author'   => get_current_user_id(),
 			'post_type'     => 'page',

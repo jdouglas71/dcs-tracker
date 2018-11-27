@@ -19,6 +19,7 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 	extract( shortcode_atts( array(
 								'redirect_page' => '',
 								'tracking_id' => '',
+								'allow_international_ti' => '',
 							), $atts ) );
 							
 	//Add the tracking id to the session
@@ -29,6 +30,7 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 			session_start();
 		}
 		$_SESSION["dcs_referral_code"] = $tracking_id;
+		$_SESSION['ripcord_allow_international_ti'] = $allow_international_ti;
 	}
 	
 	//JGD: Add the tracking id to the end of the URL so it can be tracked via google analytics.

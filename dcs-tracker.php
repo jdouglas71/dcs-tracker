@@ -35,7 +35,14 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 	
 	//JGD: Add the tracking id to the end of the URL so it can be tracked via google analytics.
 	//JGD: https://www.newmediacampaigns.com/blog/how-to-track-landing-page-redirects-using-google-analytics
-	wp_redirect( site_url('/'.$redirect_page.'?'.$tracking_id) );
+	if( $tracking_id == "geoex" )
+	{
+		wp_redirect( site_url('/wp-content/uploads/pdf/').'GeoEx_Plan_Summary.pdf' );
+	}
+	else 
+	{
+		wp_redirect( site_url('/'.$redirect_page.'?'.$tracking_id) );
+	}
 	exit();
 }
 add_shortcode( 'dcs_tracker_landing_page', 'dcs_tracker_landing_page_shortcode' );

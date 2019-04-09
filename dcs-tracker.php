@@ -101,4 +101,5 @@ function dcs_tracker_google_tracking_code()
         </script>";
 	}
 }
-add_action( 'wp_footer', 'dcs_tracker_google_tracking_code' );
+//JGD 4/9/19 Removed for Bryan at 839 
+//add_action( 'wp_footer', 'dcs_tracker_google_tracking_code' );

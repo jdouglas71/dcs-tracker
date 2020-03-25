@@ -3,7 +3,7 @@
 Plugin Name: DCS Tracker
 Plugin URI: http://douglasconsulting.net/
 Description: Creates a tracking code that can be also be used as coupons. 
-Version: 2.0
+Version: 2.1
 Author: Jason Douglas
 Author URI: http://douglasconsulting.net
 License: GPL

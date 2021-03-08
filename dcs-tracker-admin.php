@@ -99,8 +99,8 @@ function dcs_tracker_admin_page()
 		$retval .= "<div class='dcs-tracker-code'>";
 		$retval .= "<table>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-name'>Offer Code</label></td><td><input name='dcs-tracker-code-name' id='dcs-tracker-code-name'></td></tr>";
-		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Discount Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
-		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Type</label></td><td><select name='dcs-tracker-code-type' id='dcs-tracker-code-type'><option value='percentage'>Percentage</option><option value='flat_rate'>Flat Rate</option></select></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Type</label></td><td><select name='dcs-tracker-code-type' id='dcs-tracker-code-type'><option value='percentage'>Percentage</option><option value='flat_rate'>Flat Rate</option><option value='upcharge'>Upcharge</option></select></td></tr>";
 		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-code' value='Create Code'></td></tr>";
 		$retval .= "</table>";
 		$retval .= "</div>";
@@ -132,13 +132,17 @@ function dcs_tracker_admin_page()
 				
 				if( is_numeric($values['amount']) )
 				{
-					if( $values['type'] != "percentage" )
+					if( $values['type'] == "percentage" )
 					{
-						$retval .= "<td>$".number_format($values['amount'], 2)."</td>";
+						$retval .= "<td>".number_format($values['amount']*100, 0).'%'."</td>";
+					}
+					else if( $values['type'] == "upcharge" )
+					{
+						$retval .= "<td  style='color:green;'>+$".number_format($values['amount'], 2)."</td>";
 					}
 					else
 					{
-						$retval .= "<td>".number_format($values['amount']*100, 0).'%'."</td>";
+						$retval .= "<td style='color:red;'>-$".number_format($values['amount'], 2)."</td>";
 					}
 				}
 				else

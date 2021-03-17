@@ -22,6 +22,8 @@ function dcs_tracker_landing_page_shortcode($atts, $content=null)
 								'allow_international_ti' => '',
 							), $atts ) );
 							
+	rti_redirect_url();						
+							
 	//Add the tracking id to the session
 	if( $tracking_id !== '' )
 	{

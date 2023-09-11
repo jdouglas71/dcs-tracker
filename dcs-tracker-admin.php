@@ -100,7 +100,7 @@ function dcs_tracker_admin_page()
 		$retval .= "<table>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-name'>Offer Code</label></td><td><input name='dcs-tracker-code-name' id='dcs-tracker-code-name'></td></tr>";
 		$retval .= "<tr><td><label for='dcs-tracker-code-value'>Value ($)</label></td><td><input name='dcs-tracker-code-value' id='dcs-tracker-code-value'></td></tr>";
-		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Type</label></td><td><select name='dcs-tracker-code-type' id='dcs-tracker-code-type'><option value='percentage'>Percentage</option><option value='flat_rate'>Flat Rate</option><option value='upcharge'>Upcharge</option></select></td></tr>";
+		$retval .= "<tr><td><label for='dcs-tracker-code-type'>Type</label></td><td><select name='dcs-tracker-code-type' id='dcs-tracker-code-type'><option value='percentage'>Percentage</option><option value='flat_rate'>Flat Rate</option><option value='flat'>Flat</option><option value='upcharge'>Upcharge</option></select></td></tr>";
 		$retval .= "<tr><td></td><td style='text-align:right;'><input type='submit' id='dcs-tracker-create-code' value='Create Code'></td></tr>";
 		$retval .= "</table>";
 		$retval .= "</div>";
